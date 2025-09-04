@@ -679,8 +679,21 @@ window.addEventListener('DOMContentLoaded', () => {
   <option value="DMH 통합 2 : Medical Professionalism">DMH 통합 2 : Medical Professionalism</option>
 </select>
 
+<!-- 작성자 정보 -->
+<div style="margin-top:12px; max-width: 400px;">
+  <label for="respondentName"><b>작성자 이름:</b></label>
+  <input
+    type="text"
+    id="respondentName"
+    name="respondent_name"
+    placeholder="예: 홍길동"
+    required
+    style="width:100%; padding:6px; font-size:16px;"
+    autocomplete="name"
+  >
+</div>
 
-    <!-- 1_5 -->      
+	 <!-- 1_5 -->      
  <div class="question">
   <h2>1. [1_5] 행정 지원의 충분성</h2>
 
@@ -1070,3 +1083,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
