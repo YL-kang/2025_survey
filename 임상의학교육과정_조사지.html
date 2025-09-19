@@ -1511,17 +1511,19 @@ subjectData.links.forEach((link, index) => {
 function toggleQuestion3() {
   const selected = document.querySelector('input[name="3_3_2"]:checked');
   const question3 = document.getElementById("question_3_3_3");
+  const inputs = question3.querySelectorAll('input[type="radio"]');
 
   if (selected && selected.value === "1") {
     question3.style.display = "block";
+    // 보일 때만 required 적용
+    inputs.forEach(input => input.required = true);
   } else {
     question3.style.display = "none";
-
-    // 선택 해제 (비활성화 시 기존 선택값 삭제)
-    const inputs = question3.querySelectorAll('input[type="radio"]');
-    inputs.forEach(input => input.checked = false);
+    // 숨길 때 required 해제 + 선택 해제
+    inputs.forEach(input => { input.required = false; input.checked = false; });
   }
 }
+
 
 
 
@@ -2223,4 +2225,5 @@ window.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
