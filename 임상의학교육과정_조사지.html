@@ -1508,6 +1508,7 @@ subjectData.links.forEach((link, index) => {
 
 
 
+// 조건부 질문 토글 함수들
 function toggleQuestion3() {
   const selected = document.querySelector('input[name="3_3_2"]:checked');
   const question3 = document.getElementById("question_3_3_3");
@@ -1515,13 +1516,9 @@ function toggleQuestion3() {
 
   if (selected && selected.value === "1") {
     question3.style.display = "block";
-    // required 속성 추가
-    question3Inputs.forEach(input => {
-      input.setAttribute('required', 'required');
-    });
+    question3Inputs.forEach(input => input.setAttribute('required', 'required'));
   } else {
     question3.style.display = "none";
-    // required 속성 제거 및 선택 해제
     question3Inputs.forEach(input => {
       input.removeAttribute('required');
       input.checked = false;
@@ -1529,6 +1526,71 @@ function toggleQuestion3() {
   }
 }
 
+function toggleQuestion4_14() {
+  const selected = document.querySelector('input[name="4_14_1"]:checked');
+  const question2 = document.getElementById('q_4_14_2');
+  const scoreInputs = document.querySelectorAll('#q_4_14_2 input[type="text"]');
+  
+  if (selected && selected.value === "1") {
+    question2.style.display = 'block';
+    scoreInputs.forEach(input => input.setAttribute('required', 'required'));
+  } else {
+    question2.style.display = 'none';
+    scoreInputs.forEach(input => {
+      input.removeAttribute('required');
+      input.value = '';
+    });
+  }
+}
+
+// 5_8_2 조건부 표시
+function toggle5_8_2() {
+  const selected = document.querySelector('input[name="5_8_1"]:checked');
+  const followUp = document.getElementById('q5_8_2');
+  
+  if (selected) {
+    const selectedValue = parseInt(selected.value);
+    if (selectedValue >= 1 && selectedValue <= 3) {
+      followUp.style.display = 'block';
+    } else {
+      followUp.style.display = 'none';
+      // 체크박스 선택 해제
+      document.querySelectorAll('#q5_8_2 input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+      });
+      // 기타 입력란 초기화
+      const etcInput = document.querySelector('input[name="5_8_2_etc"]');
+      if (etcInput) etcInput.value = '';
+    }
+  }
+}
+
+// 초기화 함수
+window.addEventListener('DOMContentLoaded', () => {
+  loadFormData();
+  showSubjectOutcome();
+  setAutoSaveListeners();
+
+  // 조건부 질문 이벤트 리스너
+  document.querySelectorAll('input[name="3_3_2"]').forEach(radio => {
+    radio.addEventListener('change', toggleQuestion3);
+  });
+  
+  document.querySelectorAll('input[name="4_14_1"]').forEach(radio => {
+    radio.addEventListener('change', toggleQuestion4_14);
+  });
+  
+  document.querySelectorAll('input[name="5_8_1"]').forEach(radio => {
+    radio.addEventListener('change', toggle5_8_2);
+  });
+
+  // 초기 상태 설정
+  toggleQuestion3();
+  toggleQuestion4_14();
+  toggle5_8_2();
+  
+  document.getElementById("subjectSelect").addEventListener("change", showSubjectOutcome);
+});
 
 
 
@@ -1945,10 +2007,9 @@ window.addEventListener('DOMContentLoaded', () => {
 <div id="question_3_3_3" style="margin-left: 1.5em; margin-top: 1.5em; display: none;">
   <strong>(3)</strong> 졸업성과, 시기성과, 교과목 학습목표(과정성과), 수업별 학습목표(수업성과) 간의 위계적 연결을 고려하여 수업별 학습목표(수업성과)를 작성하였습니까?
   <div class="options" style="margin-top: 10px;">
-    <label><input type="radio" name="3_3_3" value="1" required > 위계적 연결을 고려하여 작성함</label>
+    <label><input type="radio" name="3_3_3" value="1"> 위계적 연결을 고려하여 작성함</label>
     <label><input type="radio" name="3_3_3" value="0"> 위계적 연결을 고려하지 않고 작성함</label>
   </div>
-</div>
 </div>
 
 
@@ -2056,15 +2117,14 @@ window.addEventListener('DOMContentLoaded', () => {
   </div>
 
   <!-- (2) 하위문항2 (예 선택 시 표시) -->
-  <div id="q_4_14_2" style="display: none; margin-top: 1em;">
-    <label><strong>(2)</strong> 실제 환자 진료 평가 결과가 존재하는 경우, 평가 평균 점수와 만점 기준을 입력해 주세요.</label>
-   <p style="font-size: 13px; color: #555; margin-top: 4px;">※ <strong>평균점수 / 만점 기준 점수</strong> 형식으로 입력해 주세요 (예: 83.5 / 100)</p>
-    <div style="margin-top: 0.5em;">
-      평균 점수: <input type="text" name="4_14_2_score" placeholder="예: 83.5" style="width: 80px;" required> 점 /
-      만점 기준: <input type="text" name="4_14_2_fullscore" placeholder= "예: 100" style="width: 80px;" required> 점
-    </div>
+<div id="q_4_14_2" style="display: none; margin-top: 1em;">
+  <label><strong>(2)</strong> 실제 환자 진료 평가 결과가 존재하는 경우, 평가 평균 점수와 만점 기준을 입력해 주세요.</label>
+  <p style="font-size: 13px; color: #555; margin-top: 4px;">※ <strong>평균점수 / 만점 기준 점수</strong> 형식으로 입력해 주세요 (예: 83.5 / 100)</p>
+  <div style="margin-top: 0.5em;">
+    평균 점수: <input type="text" name="4_14_2_score" placeholder="예: 83.5" style="width: 80px;"> 점 /
+    만점 기준: <input type="text" name="4_14_2_fullscore" placeholder="예: 100" style="width: 80px;"> 점
   </div>
-</div>
+</div
 
 
 
@@ -2229,6 +2289,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
 
 
 
