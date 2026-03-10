@@ -1,0 +1,1487 @@
+﻿
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+  <meta charset="UTF-8">
+  <title>2025년 임상의학교육과정 평가</title>
+  <style>
+    body {
+      font-family: "Apple SD Gothic Neo", Arial, sans-serif;
+      line-height: 1.6;
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+      background-color: #fcfcfc;
+      color: #2c3e50;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .deadline {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .deadline b {
+      color: #c0392b;
+    }
+    .note {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 10px;
+    }
+    .question {
+      margin: 30px 0;
+      padding: 20px;
+      background: #f5f8fa;
+      border-left: 4px solid #3498db;
+    }
+    .question h2 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    .options label {
+      display: block;
+      margin: 6px 0;
+    }
+    .evidence, .comment {
+      margin-top: 15px;
+    }
+    .evidence label, .comment label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      margin-bottom: 5px;
+    }
+    input[type="radio"] {
+      margin-right: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    /* ✅ 여기 추가 */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: center;
+}
+
+td:nth-child(1) {
+  width: 100px;
+  text-align: center;
+}
+
+td:nth-child(2) {
+  text-align: center;
+}
+ 
+
+
+
+  </style>
+<script>
+  // 입력값 저장
+function saveFormData() {
+  const formElements = document.querySelectorAll('input, textarea, select');
+  const checkboxGroups = {};
+
+  formElements.forEach(el => {
+    if (el.type === 'radio') {
+      if (el.checked) {
+        localStorage.setItem(el.name, el.value);
+      }
+    } else if (el.type === 'checkbox') {
+      if (!checkboxGroups[el.name]) checkboxGroups[el.name] = [];
+      if (el.checked) checkboxGroups[el.name].push(el.value);
+    } else {
+      localStorage.setItem(el.name, el.value);
+    }
+  });
+
+  for (const key in checkboxGroups) {
+    localStorage.setItem(key, JSON.stringify(checkboxGroups[key]));
+  }
+}
+
+function loadFormData() {
+  const formElements = document.querySelectorAll('input, textarea, select');
+
+  formElements.forEach(el => {
+    const saved = localStorage.getItem(el.name);
+    if (saved !== null) {
+      if (el.type === 'radio') {
+        if (el.value === saved) el.checked = true;
+      } else if (el.type === 'checkbox') {
+        try {
+          const savedArray = JSON.parse(saved);
+          if (Array.isArray(savedArray) && savedArray.includes(el.value)) {
+            el.checked = true;
+          }
+        } catch {
+          if (el.value === saved) {
+            el.checked = true;
+          }
+        }
+      } else {
+        el.value = saved;
+      }
+    }
+  });
+}
+
+function setAutoSaveListeners() {
+  const formElements = document.querySelectorAll('input, textarea, select');
+  formElements.forEach(el => {
+    const eventType = (el.type === 'checkbox' || el.type === 'radio' || el.tagName === 'SELECT') ? 'change' : 'input';
+    el.addEventListener(eventType, saveFormData);
+  });
+}
+
+// 실행
+window.addEventListener('DOMContentLoaded', () => {
+  loadFormData();
+  setAutoSaveListeners();
+});
+
+
+//과목별 평가요소
+
+const data = {
+
+"외과": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C3", "desc": "환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다."] },
+    { "phase": "E1C3", "outcomes": ["2. 임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C1", "outcomes": ["3. 환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["4. 환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C3", "outcomes": ["5. 환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다."] },
+    { "phase": "E2C4", "outcomes": ["6. 허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["7. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["8. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] }
+  ]
+},
+
+"내분비내과": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C3", "desc": "환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다."] },
+    { "phase": "E1C3", "outcomes": ["2. 임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["3. 환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C3", "outcomes": ["4. 환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["5. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["6. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] }
+  ]
+},
+
+"심장내과": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다." },
+    { "code": "S2C1", "desc": "최신 의학지식을 습득하기 위한 학술 활동에 참여하고 자기주도적 탐구를 수행할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다."] },
+    { "phase": "E1C3", "outcomes": ["2. 임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C1", "outcomes": ["3. 환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["4. 환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["5. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "S1C1", "outcomes": ["6. 임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다."] },
+    { "phase": "S2C1", "outcomes": ["7. 최신 의학지식을 습득하기 위한 학술 활동에 참여하고 자기주도적 탐구를 수행할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["8. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] }
+  ]
+},
+"호흡기내과": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 호흡기 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다." },
+    { "code": "S1C3", "desc": "환자의 임상적 문제 해결을 위해 근거에 기반한 임상추론을 수행할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다."] },
+    { "phase": "E1C3", "outcomes": ["2. 임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C1", "outcomes": ["3. 환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 호흡기 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["4. 호흡기 환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["5. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "S1C1", "outcomes": ["6. 임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다."] },
+    { "phase": "S1C3", "outcomes": ["7. 호흡기 환자의 임상적 문제 해결을 위해 근거에 기반한 임상추론을 수행할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["8. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] }
+  ]
+},
+"흉부외과": {
+  "phases": [
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C3", "outcomes": ["1. 임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사 결과를 해석하여 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C1", "outcomes": ["2. 환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["3. 환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C4", "outcomes": ["4. 허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["5. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["6. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] }
+  ]
+},
+"마취통증의학": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다."] },
+    { "phase": "E2C1", "outcomes": ["2. 환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다."] },
+    { "phase": "E2C4", "outcomes": ["3. 허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["4. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["5. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] }
+  ]
+},
+"정신과학": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+    { "code": "E1C2", "desc": "환자의 심리적, 사회경제적, 환경적 요인을 파악하고 환자, 가족, 다른 돌봄 제공자들과 협조하여 진료와 치료계획 수립에 활용할 수 있다." },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C3", "desc": "환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "C1C1", "desc": "타인 존중의 태도를 바탕으로 환자 및 환자 가족, 함께 일하는 동료, 보건의료 종사자들과 의사소통 할 수 있다. " },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." },
+    { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다. " },
+    { "code": "S2C1", "desc": "최신 의학지식을 습득하기 위한 학술 활동에 참여하고 자기주도적 탐구를 수행할 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 주요정신질환의 증상을 설명할 수 있다."] },
+    { "phase": "E1C2", "outcomes": ["2. 환자의 병력청취와 정신상태검사(MSE)를 시행할 수 있다."] },
+    { "phase": "E1C3", "outcomes": ["3. 주요정신질환의 진단과정과 치료계획을 설명할 수 있고, 정신과적 응급에 대한 위기개입에 대해 설명할 수 있다."] },
+    { "phase": "E2C1", "outcomes": ["4. 환자, 보호자, 의무기록을 통해 병력을 파악할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["5. 환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C3", "outcomes": ["6. 환자의 진찰과 평가를 종합하여 의무기록을 작성할 수 있다."] },
+    { "phase": "E2C4", "outcomes": ["7. 주요임상표현형에 따른 증상평가(술기)를 수행할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["8. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "C1C1", "outcomes": ["9. 지지적 면담기법을 통해 의사-환자 관계를 형성할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["10. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] },
+    { "phase": "S1C1", "outcomes": ["11. 임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다."] },
+    { "phase": "S2C1", "outcomes": ["12. 정신의학의 최신지견과 연구동향을 알고 탐색할 수 있다."] }
+  ]
+},
+"신경과학": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다. " },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다. " },
+    { "code": "S1C3", "desc": "환자의 임상적 문제 해결을 위해 근거에 기반한 임상추론을 수행할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고 받을 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 형성평가, 컨퍼런스 및 실습 준비 자율학습을 통하여 신경과 필수 지식을 습득하고 신경계 질환에 대한 접근법에 익숙해지며, 신경계 질환의 발병기전 및 병태생리를 이해할 수 있다."] },
+    { "phase": "E1C3", "outcomes": ["2. 임상 상황에서 주요 신경계 질환들에 대한 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C1", "outcomes": ["3. 환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 신경계 질환 환자의 문제와 불편감을 고려하면서 기본적인 신경학적 진찰을 독립적으로 수행할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["4. 신경계 질환 환자 진료를 바탕으로 진단계획을 수립하고 필요한 검사를 처방할 수 있다. 또한 검사결과를 해석하고 이에 따라 적절한 치료계획을 수립하고 약물을 처방할 수 있다."] },
+    { "phase": "S1C1", "outcomes": ["5. 임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다."] },
+    { "phase": "S1C3", "outcomes": ["6. 신경계 질환 환자의 임상적 문제 해결을 위해 근거에 기반한 임상추론을 수행할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["7. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고 받을 수 있다."] },
+    { "phase": "E2C4", "outcomes": ["8. 허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["9. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] }
+  ]
+},
+
+"신경외과": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+    { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 신경외과 영역의 질환에 대한 병력, 이학적 소견, 임상증상, 신경학적 징후를 실제 환자를 통해 익힌다."] },
+    { "phase": "S1C1", "outcomes": ["2. 다양한 신경외과적 질환의 진단 및 치료에 대한 지식을 실제 실습을 통해 직간접 습득한다."] },
+    { "phase": "C2C3", "outcomes": ["3. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] },
+    { "phase": "E1C3", "outcomes": ["4. 임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["5. 환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C4", "outcomes": ["6. 허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["7. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] }
+  ]
+},
+
+"가정의학": {
+  "phases": [
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C3", "desc": "환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C1", "outcomes": ["1. 질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다."] },
+    { "phase": "E1C3", "outcomes": ["2. 임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C1", "outcomes": ["3. 환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["4. 환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다."] },
+    { "phase": "E2C3", "outcomes": ["5. 환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다."] },
+    { "phase": "E2C4", "outcomes": ["6. 허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["7. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "S1C1", "outcomes": ["8. 임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["9. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] }
+  ]
+},
+
+"응급의학": {
+  "phases": [
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2C3", "desc": "환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다." },
+    { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다." },
+    { "code": "C1C2", "desc": "환자 및 환자 가족과 어려운 주제(나쁜 소식 전하기, 연명치료 중단 등)를 이야기할 때 솔직하고 공감적이며 사려깊은 태도로 소통할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." },
+    { "code": "P1C4", "desc": "의료전문가 단체의 윤리지침, 법률, 윤리적 이론을 실제 의사결정 과정에 적용하여 윤리적으로 타당한 판단을 내릴 수 있다." },
+    { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다. " },
+    { "code": "E2C6", "desc": "환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다." },
+    { "code": "P1C2", "desc": "자신의 지식과 전문성의 강점, 약점, 한계를 식별할 수 있으며, 자신의 특성과 상황에 맞는 개선계획을 수립하고 실천할 수 있다." }
+  ],
+  "links": [
+    { "phase": "E1C3", "outcomes": ["1. 급성 질환이나 손상을 평가하여 환자의 상태를 신속히 인지할 수 있다."] },
+    { "phase": "E2C2", "outcomes": ["2. 응급 환자를 적절히 진료하여 최단 시간에 환자를 안정화 시킬 수 있다."] },
+    { "phase": "E2C4", "outcomes": ["3. 응급 질환과 관련된 각종 기초 술기 및 지식을 습득하여 적용할 수 있다."] },
+    { "phase": "E2C3", "outcomes": ["4. 응급 환자의 진료와 관련된 의무기록을 올바르고 정확하게 기록할 수 있다."] },
+    { "phase": "S1C1", "outcomes": ["5. 다양한 응급 환자의 진단 및 치료에 대한 최신 지견을 습득할 수 있다."] },
+    { "phase": "C1C2", "outcomes": ["6. 응급 환자 응대를 효과적으로 할 수 있다."] },
+    { "phase": "C2C3", "outcomes": ["7. 응급 진료 과정에서의 여러 직종 간의 협업의 중요성을 인식하고 있으며 다른 사람들과 상호 협력할 수 있다."] },
+    { "phase": "P1C4", "outcomes": ["8. 응급진료에서의 다양한 윤리적인 사항을 고려할 수 있다."] },
+    { "phase": "E1C1", "outcomes": ["9. 질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다."] },
+    { "phase": "E2C6", "outcomes": ["10. 환자안전을 위한 표준주의지침을 준수하고 의료오류의 대처 원칙을 설명할 수 있다."] },
+    { "phase": "P1C2", "outcomes": ["11. 자신의 지식과 전문성의 강점, 약점, 한계를 식별할 수 있으며, 자신의 특성과 상황에 맞는 개선계획을 수립하고 실천할 수 있다."] }
+  ]
+},
+
+"성형외과학_g4": {
+  "phases": [
+    { "code": "E1F1", "desc": "인체의 정상구조와 기능을 설명하고, 질병으로 인한 변화를 설명할 수 있다." },
+    { "code": "E1F2", "desc": "질병의 원인, 병태생리, 임상 양상, 치료와 관련된 기본지식을 설명할 수 있다." },
+    { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+    { "code": "E2F1", "desc": "병력청취 및 신체진찰의 원칙과 방법을 설명할 수 있고, (모의)환자의 임상표현을 중심으로 기본적인 병력 청취와 신체 진찰을 시행할 수 있다." },
+    { "code": "E2F2", "desc": "(모의)환자 진료에서 얻은 정보를 바탕으로 초기 평가와 감별진단을 위한 계획을 수립할 수 있다." },
+    { "code": "E2F6", "desc": "환자안전을 위한 기본 원칙을 설명할 수 있고, (모의)환자와 대면할 때 이를 적용할 수 있다." },
+    { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+    { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "E2A1", "desc": "환자의 주호소 및 문제에 대해 완전하고 집중적인(focused) 병력청취와 신체진찰을 효율적으로 시행할 수 있다." },
+    { "code": "E2A3", "desc": "응급한 처치가 필요하거나 위중한 상태를 시사하는 증상이나 징후를 인지하고 보고할 수 있다." },
+    { "code": "E2A4", "desc": "환자안전을 저해하는 요인을 분별하고 환자안전 및 환자돌봄의 질 향상을 위한 활동을 실천할 수 있다." },
+    { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다." },
+    { "code": "S2C1", "desc": "최신 의학지식을 습득하기 위한 학술 활동에 참여하고 자기주도적 탐구를 수행할 수 있다." },
+    { "code": "C1F1", "desc": "의사소통의 일반적 원칙을 설명할 수 있고, 일상의 대화에서 이를 적용할 수 있다." },
+    { "code": "C1F2", "desc": "(모의)환자와의 대화에서 환자중심적 태도로 의사소통 할 수 있다." },
+    { "code": "C1C2", "desc": "환자 및 환자 가족과 어려운 주제(나쁜 소식 전하기, 연명치료 중단 등)를 이야기할 때 솔직하고 공감적이며 사려깊은 태도로 소통할 수 있다." },
+    { "code": "C1A1", "desc": "환자, 가족, 동료와 대면 및 전자 커뮤니케이션에서 효과적으로 의사소통하여 동맹을 구축하고 포용과 평등을 촉진할 수 있다." }
+  ],
+  "links": [
+    { "phase": ["E2F1", "E2C1", "E2A1", "E1C3", "S1C1"], "outcomes": ["1. 성형외과 영역에서 병력청취와 신체검사 결과에 기초하여 환자의 일차적 문제를 도출하고, 감별진단을 위한 필수 진단의학 및 영상검사를 선택, 지시, 처방할 수 있다."] },
+    { "phase": ["E2F2", "E2C2", "C1A1"], "outcomes": ["2. 성형외과 질환에 따른 수술 적응증을 알고, 적절한 수술 전, 중, 후 환자관리 원칙을 설명할 수 있다."] },
+    { "phase": ["E2F6", "E2C4", "E2A4", "S1C1"], "outcomes": ["3. 성형외과 환자치료에 필요한 적절한 술기를 관찰 또는 수행할 수 있다. 술기 시행이유와 위험성을 환자에게 설명할 수 있다."] },
+    { "phase": ["E1F1", "E1F2"], "outcomes": ["4. 성형외과 질환을 병리학적, 임상학적으로 분류하고 질병의 원인과 발병 기전, 질병으로 비롯되는 인체 주요 장기의 구조 및 기능적 변화를 설명할 수 있다."] },
+    { "phase": ["C1F1", "C1F2", "C1C2"], "outcomes": ["5. 성형외과 환자들을 대상으로 의사소통의 일반적인 원칙에 따라 환자 및 가족들과 효과적으로 의사소통할 수 있다."] }
+  ]
+},
+
+
+  "신경외과학_g4": {
+    "phases": [
+      { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+      { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+      { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+      { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." },
+      { "code": "E2C3", "desc": "환자 진료 내용, 평가, 향후 계획을 정확하게 형식에 맞는 의무기록으로 작성할 수 있다." },
+      { "code": "S1C1", "desc": "임상 상황에서 의사결정에 필요한 정보를 신속하고 정확하게 탐색하고 수집할 수 있다." },
+      { "code": "S2C1", "desc": "최신 의학지식을 습득하기 위한 학술 활동에 참여하고 자기주도적 탐구를 수행할 수 있다." },
+      { "code": "S2C2", "desc": "현재의 지식과 문제 사이의 간극을 확인하고, 이를 해결하기 위한 연구 질문과 가설을 수립할 수 있다." },
+      { "code": "C1C1", "desc": "타인 존중의 태도를 바탕으로 환자 및 환자 가족, 함께 일하는 동료, 보건의료 종사자들과 의사소통할 수 있다." },
+      { "code": "C2C1", "desc": "다양한 임상 상황에서 자신 및 다른 보건의료 전문직의 역할을 이해하고 환자 진료를 위해 협력할 수 있다." },
+      { "code": "C2C2", "desc": "팀 기반의 학습을 수행하고 서로 다른 의견에 대한 존중과 조율을 통해 자신과 팀의 수행을 개선할 수 있다." },
+      { "code": "P1C1", "desc": "자신의 성과를 비판적으로 성찰하고, 지식, 기술 및 태도 습득과 관련된 추가적인 도움이나 감독의 필요성을 인식하고 요청할 수 있다." },
+      { "code": "P2C3", "desc": "학습과정에서 경험한 리더십과 팔로워십 활동을 통해 자신을 성찰하여 미흡한 점을 개선할 수 있다." }
+    ],
+    "links": [
+    {"phase": ["E1C1", "E1C3", "E2C1", "E2C2", "E2C3", "S1C1"],
+      "outcomes": [ "1. 신경외과 영역의 질환에 대한 병력, 이학적 소견, 임상증상, 신경학적 징후를 실제 환자를 통해 익힌다."]},
+    {"phase": ["S2C1", "S2C2", "C1C1", "C2C1", "C2C2", "P1C1", "P2C3"],
+      "outcomes": ["2. 다양한 신경외과적 질환의 진단 및 치료에 대한 지식을 실제 실습을 통해 직간접 습득한다."]}
+    ]
+  },
+
+
+
+"안과학_g4": {
+    "phases": [
+      { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+      { "code": "E2F4", "desc": "모의 상황에서 기본 술기를 안전하고 정확하게 수행할 수 있다." },
+      { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+      { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." }
+    ],
+  "links": [
+    {"phase": ["E2C1"],"outcomes": ["1. 안과 영역의 기본적인 질환들을 직접 경험한다."]},
+    {"phase": ["E2F4"],"outcomes": ["2. 기본적인 술기를 습득하여 안과 영역 환자의 일차적 진료 및 처치를 할 수 있는 능력을 습득한다."]},
+    {"phase": ["E1C3"],"outcomes": ["3. 기본적인 안과 지식을 습득하여 안과 질환을 가진 환자를 만났을 때 접근법을 습득한다."]},
+    {"phase": ["E2C4"],"outcomes": ["4. 안과의 대표적인 수술케이스를 경험한다."]}
+  ]
+},
+
+"이비인후과학_g4": {
+    "phases": [
+      { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+      { "code": "E2C1", "desc": "환자, 보호자, 의무기록을 통해 병력을 파악할 수 있고, 환자의 문제와 불편감을 고려하면서 신체 진찰을 체계적으로 시행할 수 있다." },
+      { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+      { "code": "E2A3", "desc": "응급한 처치가 필요하거나 위중한 상태를 시사하는 증상이나 징후를 인지하고 보고할 수 있다." },
+    ],
+ "links": [
+    {"phase": ["E2C1"],"outcomes": ["1. 이비인후과 일차 의료에 필요한 기본적인 면담 기술과 신체 검진 방법을 익힌다."]},
+    {"phase": ["E1C3"],"outcomes": ["2. 이비인후과의 다빈도 질환에 대하여 이해한다."]},
+    {"phase": ["E2C4","E2A3"], "outcomes": ["3. 이비인후과 응급질환에 대하여 이해하고 필요한 기본적인 처치를 위한 지식과 방법을 배운다."]},
+    {"phase": ["E1C3"],"outcomes": ["4. 이비인후과에서 다루는 질환의 종류와 진료 범위를 이해한다."]}
+  ]},
+
+"재활의학_g4": {
+    "phases": [
+      { "code": "E1C1", "desc": "질병의 예방, 진단, 치료, 관리에 필요한 지식을 지속적으로 습득하고 발전시킬 수 있다." },
+      { "code": "E1C2", "desc": "환자의 심리적, 사회경제적, 환경적 요인을 파악하고 환자, 가족, 다른 돌봄 제공자들과 협조하여 진료와 치료계획 수립에 활용할 수 있다." },
+      { "code": "E1C3", "desc": "임상 상황에서 주요 감별진단을 추론하고 체계적인 접근을 통해 진단검사 및 영상검사를 선택하고, 검사결과를 해석하여 치료계획을 수립할 수 있다." },
+      { "code": "E2C2", "desc": "환자 진료를 바탕으로 진단계획을 수립하고 검사 결과를 해석할 수 있으며, 적절한 치료계획을 수립할 수 있다." }
+    ],
+  "links": [
+    {"phase": ["E1C1"],"outcomes": ["1. 재활의학과에서 다루는 다양한 질환에 대한 지식(발병기전, 상태평가)을 습득한다."]},
+    {"phase": ["E1C1","E1C2"], "outcomes": ["2. 재활의학 영역의 진단과 평가에 대한 지식을 습득한다."]},
+    {"phase": ["E1C3","E2C2"], "outcomes": ["3. 재활의학 영역의 치료계획 수립과 경과에 대한 지식을 습득한다."]}
+]},
+  };
+
+
+
+// 과목별 과정성과 표시
+function showSubjectOutcome() {
+
+  const subject = document.getElementById("subjectSelect").value;
+
+  // ✅ 과목명 표시
+  const subjectNameDisplays = document.querySelectorAll(".subjectNameDisplay");
+  subjectNameDisplays.forEach(el => {
+    el.textContent = subject || "[과목명]";
+  });
+
+  // ✅ 시기성과 리스트 생성 (phaseTableContainer 관련 삭제)
+  const phaseListBox = document.getElementById("phaseListBox");
+
+  if (phaseListBox && subject && data[subject] && data[subject].phases) {
+    let phaseListHtml = "<ul>";
+    data[subject].phases.forEach(phase => {
+      phaseListHtml += `<li><strong>${phase.code}</strong>: ${phase.desc}</li>`;
+    });
+    phaseListHtml += "</ul>";
+    phaseListBox.innerHTML = phaseListHtml;
+  } else if (phaseListBox) {
+    phaseListBox.innerHTML = "과목을 선택하시면 시기성과가 표시됩니다.";
+  }
+
+  // ✅ 표 생성 함수 호출
+  if(document.getElementById("phaseOutcomeTableContainer")) {
+    generatePhaseOutcomeTable();
+  }
+}
+
+
+
+
+
+
+
+
+
+function generatePhaseOutcomeTable() {
+  const subject = document.getElementById("subjectSelect").value;
+  const container = document.getElementById("phaseOutcomeTableContainer");
+
+  if (!subject || !data[subject]) {
+    container.innerHTML = "과목을 선택하시면 표가 생성됩니다.";
+    return;
+  }
+
+  const subjectData = data[subject];
+
+  let tableHtml = `
+    <style>
+      .phase-outcome-table td {
+        font-size: 14px; /* 2번째 행부터 작은 글자크기 */
+      }
+    </style>
+    <table class="phase-outcome-table" border="1" style="border-collapse: collapse; width: 100%;">
+      <tr>
+        <th style="width: 10%;">시기성과</th>
+        <th style="width: 65%;">교과목 학습목표 (과정성과)</th>
+        <th style="width: 25%;">연계 여부</th>
+      </tr>
+  `;
+
+subjectData.links.forEach((link, index) => {
+const inputName = `3_3_1_${link.phase}_${index + 1}`;
+
+  tableHtml += `
+    <tr>
+      <td>${Array.isArray(link.phase) ? link.phase.join("<br>") : link.phase}</td>
+      <td style="text-align: left;">
+        <ul style="margin:0; padding-left:1em; list-style-type: none;">
+          ${link.outcomes.map(outcome => `<li>${outcome}</li>`).join("")}
+        </ul>
+      </td>
+      <td>
+        <label><input type="radio" name="${inputName}" value="1" required> 적절하게 연계됨</label><br>
+        <label><input type="radio" name="${inputName}" value="0"> 적절하게 연계되지 않음</label>
+      </td>
+    </tr>
+  `;
+});
+
+
+
+
+  tableHtml += '</table>';
+  container.innerHTML = tableHtml;
+  
+  
+  loadFormData();  // ✅ 저장된 값을 다시 로드해줌
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // 맨 위 버튼 기능
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
+ //응답 초기화 기능
+
+
+
+
+
+
+
+// 조건부 질문 토글 함수들
+function toggleQuestion3() {
+  const selected = document.querySelector('input[name="3_3_2"]:checked');
+  const question3 = document.getElementById("question_3_3_3");
+  const question3Inputs = document.querySelectorAll('input[name="3_3_3"]');
+
+  if (selected && selected.value === "1") {
+    question3.style.display = "block";
+    question3Inputs.forEach(input => input.setAttribute('required', 'required'));
+  } else {
+    question3.style.display = "none";
+    question3Inputs.forEach(input => {
+      input.removeAttribute('required');
+      input.checked = false;
+    });
+  }
+}
+
+function toggleQuestion4_14() {
+  const selected = document.querySelector('input[name="4_14_1"]:checked');
+  const question2 = document.getElementById('q_4_14_2');
+  const scoreInputs = document.querySelectorAll('#q_4_14_2 input[type="text"]');
+  
+  if (selected && selected.value === "1") {
+    question2.style.display = 'block';
+    scoreInputs.forEach(input => input.setAttribute('required', 'required'));
+  } else {
+    question2.style.display = 'none';
+    scoreInputs.forEach(input => {
+      input.removeAttribute('required');
+      input.value = '';
+    });
+  }
+}
+
+// 5_8_2 조건부 표시
+function toggle5_8_2() {
+  const selected = document.querySelector('input[name="5_8_1"]:checked');
+  const followUp = document.getElementById('q5_8_2');
+  
+  if (selected) {
+    const selectedValue = parseInt(selected.value);
+    if (selectedValue >= 1 && selectedValue <= 3) {
+      followUp.style.display = 'block';
+    } else {
+      followUp.style.display = 'none';
+      // 체크박스 선택 해제
+      document.querySelectorAll('#q5_8_2 input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+      });
+      // 기타 입력란 초기화
+      const etcInput = document.querySelector('input[name="5_8_2_etc"]');
+      if (etcInput) etcInput.value = '';
+    }
+  }
+}
+
+// 초기화 함수
+window.addEventListener('DOMContentLoaded', () => {
+  loadFormData();
+  showSubjectOutcome();
+  setAutoSaveListeners();
+
+  // 조건부 질문 이벤트 리스너
+  document.querySelectorAll('input[name="3_3_2"]').forEach(radio => {
+    radio.addEventListener('change', toggleQuestion3);
+  });
+  
+  document.querySelectorAll('input[name="4_14_1"]').forEach(radio => {
+    radio.addEventListener('change', toggleQuestion4_14);
+  });
+  
+  document.querySelectorAll('input[name="5_8_1"]').forEach(radio => {
+    radio.addEventListener('change', toggle5_8_2);
+  });
+
+  // 초기 상태 설정
+  toggleQuestion3();
+  toggleQuestion4_14();
+  toggle5_8_2();
+  
+  document.getElementById("subjectSelect").addEventListener("change", showSubjectOutcome);
+});
+
+
+
+  // 저장 이벤트 연결 + 과목 표시 초기화
+window.addEventListener('DOMContentLoaded', () => {
+  loadFormData();
+  showSubjectOutcome();
+
+  const formElements = document.querySelectorAll('input, textarea, select');
+  formElements.forEach(el => {
+    el.addEventListener('change', saveFormData);
+    el.addEventListener('input', saveFormData);
+  });
+
+  document.getElementById("subjectSelect").addEventListener("change", showSubjectOutcome);
+});
+
+
+</script>
+
+
+</head>
+<body>
+  <h1>2025년 연세의대 교육프로그램 평가</h1>
+  <p style="font-size: 18px; font-weight: 500; color: #2c3e50;">평가 대상: 임상의학교육과정(2025학년도 2학기) </p>
+  <div class="deadline">
+    제출기한: <b> 2026.3.~ </b>
+  </div>
+
+  <div class="note">* 근거자료명은 입력한 값의 원자료가 포함된 자료이름(파일이름)을 작성하여 주십시오. (근거자료 예시를 참조)</div>
+  <div class="note">* 근거자료는 별도 제출하지 않으셔도 되며, 부서에서 보관해 주십시오. (추후 필요시 근거자료의 제출을 요청할 수 있음)</div>
+  <div class="note">* 입력한 결과 값 외에 추가적으로 작성하실 내용이나, 평가지표 개선과 관련한 의견이 있을 경우 <b>비고/의견</b>란에 기입해 주십시오.</div>
+
+ <form method="POST" action="https://script.google.com/macros/s/AKfycbz9mVgVMg1xrGpBzWX8TYBQpIXF3gm_ieSs7mkJqgKSzbqNj5_8zFqwlph1Yiv9Cuoo/exec">
+
+<br>
+<label for="subject"><b>과목을 선택하세요:</b></label>
+<select name="subject" id="subjectSelect" required style="width: 100%; max-width: 400px; padding: 6px;font-size: 16px;">
+
+  <option value="">-- 과목 선택 --</option>
+ <optgroup label="Core 1">
+  <option value="외과">외과</option>
+  <option value="내분비내과">내분비내과</option>
+  <option value="심장내과">심장내과</option>
+  <option value="호흡기내과">호흡기내과</option>
+  <option value="흉부외과">흉부외과</option>
+  <option value="마취통증의학">마취통증의학</option>
+  </optgroup>
+
+ <optgroup label="Core 2">
+  <option value="정신과학">정신과학</option>
+  <option value="신경과학">신경과학</option>
+  <option value="신경외과학">신경외과학</option>
+  <option value="가정의학">가정의학</option>
+  <option value="응급의학">응급의학</option>
+  </optgroup>
+
+<optgroup label="4학년">
+  <option value="성형외과학_g4">성형외과학_g4</option>
+  <option value="신경외과학_g4">신경외과학_g4</option>
+  <option value="안과학_g4">안과학_g4</option>
+  <option value="이비인후과학_g4">이비인후과학_g4</option>
+  <option value="재활의학_g4">재활의학_g4</option>
+  </optgroup>
+</select>
+
+  <!-- 작성자 이름 -->
+ <div style="margin-top:12px; max-width:400px;">
+  <label for="respondentName"><b>작성자:</b></label>
+  <input type="text" id="respondentName" name="respondent_name"
+         placeholder="홍길동" required
+         style="width:70%; padding:6px; font-size:16px;">
+</div>
+
+
+<!-- 2_2_1 -->
+<div class="question">
+  <h2>1. [2_2_1] 교과목 시작 전에 <u>기본/심화학습</u>의  합격선을 설정하기 위한 사전계획을 수립하였습니까?</h2>
+
+
+  <!-- 하위 문항 1 -->
+  <div style="margin-left: 1.5em; margin-top: 1em;">
+  <div class="options">
+    <p style="font-size: 13px; color: #555; margin-top: 4px;">
+      * 아래 항목을 모두 포함한 경우에 한해 ‘수립함’으로 응답해 주십시오.<br>
+      - Honor 등급의 객관적 기준 제시<br>
+      - Pass 등급의 객관적 기준 제시
+    </p>
+    <label><input type="radio" name="2_2_1_1" value="1" required> 사전계획을 수립함</label>
+    <label><input type="radio" name="2_2_1_1" value="0"> 사전계획을 수립하지 않음</label>
+  </div>
+</div>
+
+
+    <!-- 근거자료 및 비고 입력란 -->
+    <div class="evidence" style="margin-top: 20px;">
+      <label for="evidence_2_2_1">근거자료명:</label>
+      <input type="text" id="evidence_2_2_1" name="evidence_2_2_1" placeholder="예: 관련 문서명 또는 파일이름">
+      <div style="font-size: 13px; color: #555;">
+        근거자료 예시: Honor 등급, Pass 등급, 강화학습 대상자 선정의 객관적 기준, 경계선 학생 정의 등이 포함된 사전계획 문서
+      </div>
+    </div>
+    <div class="comment">
+      <label for="comment_2_2_1">비고/의견:</label>
+      <textarea id="comment_2_2_1" name="comment_2_2_1" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+    </div>
+  </div>
+
+    <!-- 2_2_2 -->
+<div class="question">
+  <h2>2. [2_2_2] 강화학습 운영의 사전계획 수립</h2>
+
+  <!-- 하위 문항 1 -->
+  <div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(1)</strong> 교과목 시작 전에 강화학습(재교육)의 합격선을 설정하기 위한 사전계획을 수립하였습니까?
+    <div class="options">
+      <label><input type="radio" name="2_2_2_1" value="1"  required > 사전계획을 수립함</label>
+      <label><input type="radio" name="2_2_2_1" value="0"> 사전계획을 수립하지 않음</label>
+    </div>
+  </div>
+
+  <!-- 하위 문항 2 -->
+  <div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(2)</strong> 강화학습(재교육)에서 기본학습 시험문제를 재사용하였습니까?
+    <div class="options">
+      <label><input type="radio" name="2_2_2_2" value="1" required> 재사용함 </label>
+      <label><input type="radio" name="2_2_2_2" value="0"> 재사용하지 <u>않음</u></label>
+    </div>
+  </div>
+
+
+<!-- 하위 문항 3 -->
+  <div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(3)</strong> 강화학습(재교육) 이후 Pass를 받은 학생들의 학업성취 수준이, 강화학습 없이 Pass를 받은 학생들의 학업성취 수준과 동일하다고 생각하십니까?
+    <div class="options">
+      <label><input type="radio" name="2_2_2_3" value="1" required> 동일하다고 생각함</label>
+      <label><input type="radio" name="2_2_2_3" value="0"> 동일하지 않다고 생각함</label>
+    </div>
+  </div>
+
+    <!-- 공통 근거자료 및 비고 입력란 -->
+    <div class="evidence" style="margin-top: 20px;">
+      <label for="evidence_2_2_2">근거자료명 (전체 항목 공통):</label>
+      <input type="text" id="evidence_2_2_2" name="evidence_2_2_2" placeholder="예: 관련 문서명 또는 파일이름">
+      <div style="font-size: 13px; color: #555;">
+         근거자료 예시: 강화학습 대상자 기준, 강화학습 내용 구성 및 평가방법, 강화학습을 위한 시험문제, 강화학습 관련 사전과목운영 회의록 
+      </div>
+    </div>
+    <div class="comment">
+      <label for="comment_2_2_2">비고/의견 (전체 항목 공통):</label>
+      <textarea id="comment_2_2_2" name="comment_2_2_2" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+    </div>
+  </div>
+</div>
+
+  <!-- 2_3 -->
+<div class="question">
+  <h2>3. [2_3] 교육 자원의 충분성</h2>
+
+  <!-- 하위 문항 1 -->
+  <div style="margin-left: 1.5em; margin-top: 1em;">
+    <strong>(1)</strong> 학생 예진을 위해 별도의 진료실을 운영하였습니까?
+ <div class="options">
+    <label><input type="radio" name="2_3_1" value="1" required> 운영함</label>
+      <label><input type="radio" name="2_3_1" value="0"> 운영하지 않음</label>
+    </div>
+</div>
+
+<!-- 하위 문항 2 -->
+<div style="margin-left: 1.5em; margin-top: 1em;">
+  <strong>(2)</strong> 과목책임교수 또는 실습담당교수의 전체 업무 중 교육 관련 업무에 할애한 시간의 비율을 입력해 주십시오.
+  <div style="margin-top: 0.5em;">
+    <input type="number" name="2_3_2" min="0" max="100" step="1" required style="width: 70px;"> %
+  </div>
+  <p style="font-size: 13px; color: #555; margin-top: 4px;">
+    ※ 소수점 없이 정수(%) 단위로 입력해 주십시오.
+  </p>
+</div>
+
+
+<!-- 하위 문항 3 -->
+<div style="margin-left: 1.5em; margin-top: 1em;">
+  <strong>(3)</strong> 학생 담당(교육담당) 전공의의 전체 업무 중 교육 관련 업무에 할애한 시간의 비율을 입력해 주십시오.
+  <div style="margin-top: 0.5em;">
+    <input type="number" name="2_3_3" min="0" max="100" step="1" required style="width: 70px;"> %
+  </div>
+  <p style="font-size: 13px; color: #555; margin-top: 4px;">
+    ※ 소수점 없이 정수(%) 단위로 입력해 주십시오.
+  </p>
+</div>
+
+  <!-- 하위 문항 4 -->
+  <div style="margin-left: 1.5em; margin-top: 1em;">
+    <strong>(4)</strong> 실습과목에 대한 <u>인력 지원</u>이 충분하다고 생각하십니까?
+    <div style="text-align: center; font-size: 14px; color: #777; margin-bottom: 5px;">
+      1 = 매우 부족함 &nbsp;&nbsp;|&nbsp;&nbsp; 10 = 매우 충분함
+    </div>
+    <div class="options" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      <label><input type="radio" name="2_3_4" value="1" required>1</label>
+      <label><input type="radio" name="2_3_4" value="2">2</label>
+      <label><input type="radio" name="2_3_4" value="3">3</label>
+      <label><input type="radio" name="2_3_4" value="4">4</label>
+      <label><input type="radio" name="2_3_4" value="5">5</label>
+      <label><input type="radio" name="2_3_4" value="6">6</label>
+      <label><input type="radio" name="2_3_4" value="7">7</label>
+      <label><input type="radio" name="2_3_4" value="8">8</label>
+      <label><input type="radio" name="2_3_4" value="9">9</label>
+      <label><input type="radio" name="2_3_4" value="10">10</label>
+    </div>
+  </div>
+
+  <!-- 하위 문항 5 -->
+  <div style="margin-left: 1.5em; margin-top: 2em;">
+    <strong>(5)</strong> 실습과목의 <u>과목운영비 및 예산</u>이 충분하다고 생각하십니까?
+    <div style="text-align: center; font-size: 14px; color: #777; margin-bottom: 5px;">
+      1 = 매우 부족함 &nbsp;&nbsp;|&nbsp;&nbsp; 10 = 매우 충분함
+    </div>
+    <div class="options" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      <label><input type="radio" name="2_3_5" value="1" required>1</label>
+      <label><input type="radio" name="2_3_5" value="2">2</label>
+      <label><input type="radio" name="2_3_5" value="3">3</label>
+      <label><input type="radio" name="2_3_5" value="4">4</label>
+      <label><input type="radio" name="2_3_5" value="5">5</label>
+      <label><input type="radio" name="2_3_5" value="6">6</label>
+      <label><input type="radio" name="2_3_5" value="7">7</label>
+      <label><input type="radio" name="2_3_5" value="8">8</label>
+      <label><input type="radio" name="2_3_5" value="9">9</label>
+      <label><input type="radio" name="2_3_5" value="10">10</label>
+    </div>
+  </div>
+
+  <!-- 하위 문항 6 -->
+  <div style="margin-left: 1.5em; margin-top: 2em;">
+    <strong>(6)</strong> 실습과목 운영에 필요한 <u>시설/설비</u>가 충분하다고 생각하십니까?
+    <div style="text-align: center; font-size: 14px; color: #777; margin-bottom: 5px;">
+      1 = 매우 부족함 &nbsp;&nbsp;|&nbsp;&nbsp; 10 = 매우 충분함
+    </div>
+    <div class="options" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      <label><input type="radio" name="2_3_6" value="1" required>1</label>
+      <label><input type="radio" name="2_3_6" value="2">2</label>
+      <label><input type="radio" name="2_3_6" value="3">3</label>
+      <label><input type="radio" name="2_3_6" value="4">4</label>
+      <label><input type="radio" name="2_3_6" value="5">5</label>
+      <label><input type="radio" name="2_3_6" value="6">6</label>
+      <label><input type="radio" name="2_3_6" value="7">7</label>
+      <label><input type="radio" name="2_3_6" value="8">8</label>
+      <label><input type="radio" name="2_3_6" value="9">9</label>
+      <label><input type="radio" name="2_3_6" value="10">10</label>
+    </div>
+  </div>
+  </div>
+
+    <!-- 2_6 -->
+<div class="question">
+  <h2>4. [2_6] 임상실습 시작 전에, Honor, Pass, Non-pass 합격선 기준을 학생들에게 고지하였습니까?</h2>
+    <div class="options">
+      <label><input type="radio" name="2_6" value="1" required> 고지함</label>
+      <label><input type="radio" name="2_6" value="0"> 고지하지 않음</label>
+    </div>
+
+  <!-- 공통 근거자료 및 비고 -->
+  <div class="evidence" style="margin-top: 25px;">
+    <label for="evidence_2_6">근거자료명:</label>
+    <input type="text" id="evidence_2_6" name="evidence_2_6" placeholder="예: 관련 문서명 또는 파일이름">
+    <div style="font-size: 13px; color: #555;">근거자료 예시: 강의계획서, 안내문, LMS 공지 캡처 등</div>
+  </div>
+  <div class="comment">
+    <label for="comment_2_6">비고/의견:</label>
+    <textarea id="comment_2_6" name="comment_2_6" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+  </div>
+</div>
+</div>
+
+    <!-- 2_7 -->
+<div class="question">
+  <h2>5. [2_7] 과목 시작 전에 강화학습(재교육) 대상자 선정과 관련하여, 구체적인 선발 기준이나 예외 기준, 통과 기준 등을 사전에 고지하였습니까?</h2>
+    <div class="options">
+      <label><input type="radio" name="2_7" value="1" required> 구체적인 기준 고지함</label>
+      <label><input type="radio" name="2_7" value="0"> 구체적인 기준 고지하지 않음</label>
+    </div>
+
+  <!-- 공통 근거자료 및 비고 -->
+  <div class="evidence" style="margin-top: 25px;">
+    <label for="evidence_2_7">근거자료명:</label>
+    <input type="text" id="evidence_2_7" name="evidence_2_7" placeholder="예: 관련 문서명 또는 파일이름">
+    <div style="font-size: 13px; color: #555;">근거자료 예시: 강의계획서, 안내문, LMS 공지 캡처 등</div>
+  </div>
+  <div class="comment">
+    <label for="comment_2_7">비고/의견:</label>
+    <textarea id="comment_2_7" name="comment_2_7" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+  </div>
+</div>
+</div>
+
+    <!-- 2_8 -->
+<div class="question">
+  <h2>6. [2_8] Honor 등급 결정을 위한 객관적 기준을 명시하였습니까?</h2>
+    <div class="options">
+      <label><input type="radio" name="2_8" value="1" required> 객관적 기준 제시함</label>
+      <label><input type="radio" name="2_8" value="0"> 객관적 지준 제시하지 않음</label>
+    </div>
+
+  <!-- 공통 근거자료 및 비고 -->
+  <div class="evidence" style="margin-top: 25px;">
+    <label for="evidence_2_8">근거자료명:</label>
+    <input type="text" id="evidence_2_8" name="evidence_2_8" placeholder="예: 관련 문서명 또는 파일이름">
+    <div style="font-size: 13px; color: #555;">근거자료 예시: 임상실습계획서, Honor 대상자 선정 기준이 문서화된 자료 등</div>
+  </div>
+  <div class="comment">
+    <label for="comment_2_8">비고/의견:</label>
+    <textarea id="comment_2_8" name="comment_2_8" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+  </div>
+</div>
+</div>
+
+<div class="question">
+  <h2>7. [2_11] 표준화환자(SP) 또는 시뮬레이션을 활용한 학생평가의 <u>평균점수</u>는 얼마입니까?</h2>
+  <div style="margin-left: 1.5em; margin-top: 0.8em;">
+  <p style="font-size: 13px; color: #555; margin-top: 4px;">※ <strong>평균점수 / 만점 기준 점수</strong> 형식으로 입력해 주세요 (예: 83.5 / 100)</p>
+        <div style="margin-top: 0.5em;">
+      평균 점수: <input type="text" name="2_11_score" placeholder="예: 83.5" style="width: 80px;"  required > 점 /
+      만점 기준: <input type="text" name="2_11_fullscore" placeholder="예: 100" style="width: 80px;" required> 점
+  </div>
+</div>
+</div>
+
+ <!-- 3_2-->    
+    <div class="question">
+      <h2>8. [3_2] 의료환경의 변화를 반영하여 교과목 내용을 개선하였습니까?</h2>
+            <p style="font-size: 13px; color: #555; margin-top: 4px;">
+* 의료환경의 변화란, 의료에 직·간접적으로 영향을 주는 자연 또는 사회의 조건과 형편의 변화를 의미하며, 의료의 수요·공급·사회적 요구의 변화 등을 포함함.
+  </p>
+
+      <div class="options">
+        <label><input type="radio" name="3_2" value="1" required > 개선함</label>
+<label><input type="radio" name="3_2" value="0"> 개선하지 않음</label>
+
+      </div>
+      <div class="evidence">
+        <label for="evidence_3_2">근거자료명:</label>
+        <input type="text" id="evidence_3_2" name="evidence_3_2" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 보건 의료 정책 변화에 따른 교과목 개편 회의록, 학습목표 및 강의안 수정 내역 등</div>
+      </div>
+      <div class="comment">
+        <label for="comment_3_2">비고/의견:</label>
+        <textarea id="comment_3_2" name="comment_3_2" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+      </div>
+    </div>
+
+<!-- ✅ 시기성과 코드 + 여부 표 -->
+  <div id="phaseTableContainer" style="margin-top: 10px;">
+
+  </div>
+
+     <!-- 3_3--> 
+<div class="question">
+  <h2> 9. [3_3] 졸업성과-시기성과-과정성과-수업성과가 연계된 성과체계 수립 비율</h2>
+    <p style="font-size: 15px; color: #555; margin-top: 6px;">
+    ※ 2025학년도 2학기 개설된 
+    <span class="subjectNameDisplay" style="font-weight: bold; color: #1a73e8;">[과목명]</span>
+    교과목의 시기성과는 다음과 같습니다.
+  </p>
+
+  <!-- ✅ 네모칸 (박스) -->
+  <div id="phaseListBox" style="
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+    background-color: #f9f9f9; /* 연회색 배경 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    padding: 10px; /* 안쪽 여백 */
+  ">
+    과목을 선택하시면 시기성과가 표시됩니다.
+  </div>
+
+  <!-- 하위 문항 1 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(1)</strong> 해당 교과목의 시기성과가 교과목 학습목표(과정성과)와 <b>위계적으로 적절하게 연계</b>되어 있다고 생각하십니까?
+
+    <div id="phaseOutcomeTableContainer">
+    과목을 선택하시면 표가 생성됩니다.
+  </div>
+  
+  </div>
+  
+<!-- 하위 문항 2 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+  <strong>(2)</strong> 수업별 학습목표를 작성하셨습니까?
+  <div class="options" style="margin-top: 10px;">
+    <label><input type="radio" name="3_3_2" value="1" onchange="toggleQuestion3()" required > 작성하였음 </label>
+    <label><input type="radio" name="3_3_2" value="0" onchange="toggleQuestion3()"> 작성하지 않음</label>
+  </div>
+</div>
+
+  
+<!-- 하위 문항 3 -->
+<div id="question_3_3_3" style="margin-left: 1.5em; margin-top: 1.5em; display: none;">
+  <strong>(3)</strong> 졸업성과, 시기성과, 교과목 학습목표(과정성과), 수업별 학습목표(수업성과) 간의 위계적 연결을 고려하여 수업별 학습목표(수업성과)를 작성하였습니까?
+  <div class="options" style="margin-top: 10px;">
+    <label><input type="radio" name="3_3_3" value="1"> 위계적 연결을 고려하여 작성함</label>
+    <label><input type="radio" name="3_3_3" value="0"> 위계적 연결을 고려하지 않고 작성함</label>
+  </div>
+</div>
+</div>
+	 
+
+
+     <!-- 4_4-->    
+    <div class="question">
+      <h2>10. [4_4] 2025년에 개최된 합격선 설정을 위한 평가자 교육 및 훈련(준거설정 방법에 대한 교육)에 참여한 적이 있습니까?</h2>
+
+      <div class="options">
+        <label><input type="radio" name="4_4" value="1" required> 참여하였음</label>
+<label><input type="radio" name="4_4" value="0"> 참여하지 않음</label>
+
+      </div>
+      <div class="evidence">
+        <label for="evidence_4_4">근거자료명:</label>
+        <input type="text" id="evidence_4_4" name="evidence_4_4" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 평가자 교육 참석 확인증, 교육 훈련 이수 내역 캡쳐본 등</div>
+      </div>
+      <div class="comment">
+        <label for="comment_4_4">비고/의견:</label>
+        <textarea id="comment_4_4" name="comment_4_4" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+      </div>
+    </div>
+
+
+     <!-- 4_7 --> 
+<div class="question">
+  <h2> 11. [4_7] 시험 문제 공개 이외에, 학생들에게 다양한 형태의 피드백을 제공한 적이 있습니까?</h2>
+    <p style="font-size: 13px; color: #555; margin-top: 4px;">
+* 다양한 형태의 피드백이란, 책임교수 면담, TBL 진행 후 조별/강의교수 피드백, CT&CR 보고서에 대한 서면 피드백, 성찰에세이에 대한 서면 피드백, 실습과목별 종합피드백, 평가루브릭에 기반한 OSCE & CPX 평가 관련 피드백, 형성평가 및 총괄평가 결과를 근거로 학생에게 제공하는 종합적 피드백 등을 포함할 수 있음.
+  </p>
+    <div class="options" style="margin-top: 6px;">
+      <label><input type="radio" name="4_7" value="1" required> 제공함 </label>
+      <label><input type="radio" name="4_7" value="0"> 제공하지 않음 </label>
+    </div>
+
+  <!-- 공통 근거자료 및 비고 -->
+  <div class="evidence" style="margin-top: 25px;">
+    <label for="evidence_4_7">근거자료명:</label>
+    <input type="text" id="evidence_4_7" name="evidence_4_7" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 서술형 피드백 또는 구두 피드백 시행 기록, 시험 후 개별 피드백 제공 내역, 교수자 회의록 또는 학생 상담 기록, 수업 중 실시한 형성평가 내역 등 </div>
+      </div>
+  <div class="comment">
+    <label for="comment_4_7">비고/의견:</label>
+    <textarea id="comment_4_7" name="comment_4_7" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+  </div>
+</div>
+  
+     <!-- 4_8-->    
+    <div class="question">
+      <h2>12. [4_8] 과목별/시기별 평가결과에 기반한 피드백 제공 비율 </h2>
+     <!-- 하위 문항 1 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+  <strong>(1)</strong> 해당 교과목에서 형성평가를 시행하였습니까?
+  <p style="font-size: 13px; color: #555; margin-top: 4px;"> 
+  * 형성평가: 학습과 교수가 진행되고 있는 과정 중에 학생에게 피드백을 제공하고, 이를 통해 교수·학습 방법과 교육과정을 개선하기 위해 실시하는 평가 </p>
+  <div class="options" style="margin-top: 10px;">
+    <label><input type="radio" name="4_8_1"  value="1" required> 시행함</label>
+    <label><input type="radio" name="4_8_1"  value="0"> 시행하지 않음</label>
+  </div>
+</div> 
+        <!-- 하위 문항 2 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(2)</strong> 교과목에서 형성평가 또는 총괄평가*에 기반한 종합피드백**을 학생에게 제공하였습니까?
+      
+  <p style="font-size: 13px; color: #555; margin-top: 4px;"> *총괄평가: 학생의 학업 성취 달성 정도를 최종적으로 확인하기 위한 총체적 검사<br> 
+  	**종합피드백: 학생이 학습한 내용과 평가 결과를 포함하여, 학업 성취 수준의 강·약점, 발전할 사항 등을 총체적으로 제시하는 피드백 </p>
+
+      <div class="options">
+        <label><input type="radio" name="4_8_2" value="1" required> 제공함</label>
+<label><input type="radio" name="4_8_2" value="0"> 제공하지 않음</label>
+      </div>
+    </div>
+    
+            <!-- 하위 문항 3 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(3)</strong> 시기성과의 달성 여부를 확인하기 위한 종합평가 결과를  바탕으로 학생에게 피드백을 제공하였습니까?
+
+      <div class="options">
+        <label><input type="radio" name="4_8_3" value="1" required> 제공함</label>
+<label><input type="radio" name="4_8_3" value="0"> 제공하지 않음</label>
+      </div>
+    </div>
+      <div class="evidence">
+        <label for="evidence_4_8">근거자료명 (전체 항목 공통):</label>
+        <input type="text" id="evidence_4_8" name="evidence_4_8" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 종합피드백 계획 및 방법이 명시된 자료 </div>
+      </div>
+      <div class="comment">
+        <label for="comment_4_8">비고/의견 (전체 항목 공통):</label>
+        <textarea id="comment_4_8" name="comment_4_8" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+      </div>
+    </div>
+
+
+ <!-- 4_14 -->
+<div class="question">
+  <h2>13. [4_14] 임상실습에서 실제 환자 진료 역량 평가 결과</h2>
+
+ <!-- 하위문항 1 -->
+  <div style="margin-left: 1.5em; margin-top: 1em;">
+    <strong>(1)</strong> 본 교과목에서 실제 환자 진료 역량을 평가하기 위한 도구가 개발되어 운영되고 있습니까?
+     <div class="options">
+    <label><input type="radio" name="4_14_1" value="1" onclick="document.getElementById('q_4_14_2').style.display='block'" required> 예</label>
+    <label><input type="radio" name="4_14_1" value="0" onclick="document.getElementById('q_4_14_2').style.display='none'"> 아니오</label>
+  </div>
+
+  <!-- (2) 하위문항2 (예 선택 시 표시) -->
+<div id="q_4_14_2" style="display: none; margin-top: 1em;">
+  <label><strong>(2)</strong> 실제 환자 진료 평가 결과가 존재하는 경우, 평가 평균 점수와 만점 기준을 입력해 주세요.</label>
+  <p style="font-size: 13px; color: #555; margin-top: 4px;">※ <strong>평균점수 / 만점 기준 점수</strong> 형식으로 입력해 주세요 (예: 83.5 / 100)</p>
+  <div style="margin-top: 0.5em;">
+    평균 점수: <input type="text" name="4_14_2_score" placeholder="예: 83.5" style="width: 80px;"> 점 /
+    만점 기준: <input type="text" name="4_14_2_fullscore" placeholder="예: 100" style="width: 80px;"> 점
+  </div>
+</div>
+
+
+
+  <!-- 근거자료 -->
+  <div class="evidence" style="margin-left: 1.5em; margin-top: 20px;">
+    <label for="evidence_4_14">근거자료명 (전체 항목 공통):</label>
+    <input type="text" id="evidence_4_14" name="evidence_4_14" placeholder="예: 관련 문서명 또는 파일 이름" style="width: 100%; max-width: 600px;">
+    <div style="font-size: 13px; color: #555;">근거자료 예시: 학생별 평가 결과표, 평가 루브릭 또는 체크리스트, LMS 또는 평가시스템 출력물 등</div>
+  </div>
+
+  <!-- 비고/의견 -->
+  <div class="comment" style="margin-left: 1.5em; margin-top: 15px;">
+    <label for="comment_4_14">비고/의견 (전체 항목 공통):</label>
+    <textarea id="comment_4_14" name="comment_4_14" rows="3" placeholder="자유롭게 입력해 주세요." style="width: 100%; max-width: 600px;"></textarea>
+  </div>
+</div>
+
+
+
+</div>
+
+
+     
+          <!-- 5_6-->    
+    <div class="question">
+      <h2>14. [5_6] 해당 교과목은 기초-임상-인문사회의학  수직통합 과목 입니까?</h2>
+  <p style="font-size: 13px; color: #555; margin-top: 4px;"> * 수직통합 과목이란 기초과학, 임상의학, 의료인문학 간의 관련성을 제공하여 통합된 전체 과제로 학습자를 가르치는 과목을 의미함 </p>
+
+      <div class="options">
+        <label><input type="radio" name="5_6" value="1" required> 수직통합 과목임</label>
+<label><input type="radio" name="5_6" value="0"> 수직통합 과목이 아님</label>
+
+      </div>
+      <div class="evidence">
+        <label for="evidence_5_6">근거자료명:</label>
+        <input type="text" id="evidence_5_6" name="evidence_5_6" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 통합교육 운영계획서, 강의계획서 내 과목 간 통합 구성표 </div>
+      </div>
+      <div class="comment">
+        <label for="comment_5_6">비고/의견:</label>
+        <textarea id="comment_5_6" name="comment_5_6" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+      </div>
+    </div>
+    
+   
+   
+
+
+
+ <!-- 5_8 -->
+<div class="question">
+  <h2>15. [5_8] 의도한 교육성과-교육내용의 조직-교수학습법-평가방법의 유기적 연결</h2>
+
+  <div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(1)</strong> 본 교과목의 강의계획서에 제시된 교육내용, 교수학습법, 평가방법이 교과목 학습 목표 (의도한 교육성과, 과정성과) 달성에 유기적으로 연결되어 있다고 생각하십니까?
+    <div class="options" style="margin-top: 6px;">
+      <label><input type="radio" name="5_8_1" value="1" required> 1. 전혀 아니다</label>
+      <label><input type="radio" name="5_8_1" value="2"> 2. 아니다</label>
+      <label><input type="radio" name="5_8_1" value="3"> 3. 보통</label>
+      <label><input type="radio" name="5_8_1" value="4"> 4. 그렇다</label>
+      <label><input type="radio" name="5_8_1" value="5"> 5. 매우 그렇다</label>
+    </div>
+  </div>
+
+<!-- (2)번 문항: 조건부 노출 -->
+<div id="q5_8_2" style="display:none;">
+  <div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(2)</strong> 위 문항에서 "보통 이하(1~3)"로 응답하신 경우, 아래 보기 중 어떤 부분의 개선이 필요하다고 생각하십니까?<br> (복수 선택 가능)<br><br>
+
+    <!-- ✅ name을 "5_8_2"로 고정 -->
+    <label>
+      <input type="checkbox" name="5_8_2" value="학습목표"> 
+    <strong>  학습목표</strong>
+      <span class="description">: 강의계획서에 제시된 학습목표의 명확성 부족</span>
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="5_8_2" value="교육내용 조직"> 
+     <strong> 교육내용 조직 </strong>
+      <span class="description">: 제시된 교육내용이 학습 목표와 일치하지 않음</span>
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="5_8_2" value="교수학습법"> 
+    <strong>  교수학습법 </strong>
+      <span class="description">: 사용된 교수학습법이 학습 목표 달성에 적절하지 않음</span>
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="5_8_2" value="평가방법"> 
+    <strong>  평가방법 </strong>
+      <span class="description">: 평가 방식이 학습목표와 잘 연계되지 않거나, 학습 성과를 제대로 측정하지 못함</span>
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="5_8_2" value="기타"> 
+    <strong>  기타 </strong>  (직접 작성해 주세요):
+      <input type="text" name="5_8_2_etc" style="width: 300px;">
+    </label>
+  </div>
+</div>
+
+
+
+<!-- (항상 노출) 근거자료 및 의견 -->
+  <div class="evidence" style="margin-left: 1.5em; margin-top: 1.5em;">
+    <label for="evidence_5_8">근거자료명 (전체 항목 공통):</label>
+    <input type="text" id="evidence_5_8" name="evidence_5_8" placeholder="예: 관련 문서명 또는 파일이름">
+    <div style="font-size: 13px; color: #555;">근거자료 예시: 통합교육 운영계획서, 강의계획서 내 과목 간 통합 구성표</div>
+  </div>
+  <div class="comment" style="margin-left: 1.5em; margin-top: 1em;">
+    <label for="comment_5_8">비고/의견 (전체 항목 공통):</label>
+    <textarea id="comment_5_8" name="comment_5_8" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+  </div>
+</div>
+ 
+ 
+ 
+
+
+ 
+    
+    <!-- 맨 위로 이동 버튼 -->
+<button onclick="scrollToTop()" style="
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 10px 15px;
+  font-size: 14px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+">
+
+  ▲ 맨 위로
+</button>
+
+    <button type="submit">제출</button>
+  </form>
+  
+  
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('input[name="5_8_1"]');
+    const followUp = document.getElementById('q5_8_2');
+
+    radios.forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        const selected = parseInt(this.value);
+        if (selected >= 1 && selected <= 3) {
+          followUp.style.display = 'block';
+        } else {
+          followUp.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

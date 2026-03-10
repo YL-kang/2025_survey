@@ -1,0 +1,948 @@
+﻿
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<style type="text/css">
+.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+}
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+  <meta charset="UTF-8">
+  <title>2025년 DMH 교육과정 평가</title>
+  <style>
+    body {
+      font-family: "Apple SD Gothic Neo", Arial, sans-serif;
+      line-height: 1.6;
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+      background-color: #fcfcfc;
+      color: #2c3e50;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .deadline {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .deadline b {
+      color: #c0392b;
+    }
+    .note {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 10px;
+    }
+    .question {
+      margin: 30px 0;
+      padding: 20px;
+      background: #f5f8fa;
+      border-left: 4px solid #3498db;
+    }
+    .question h2 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    .options label {
+      display: block;
+      margin: 6px 0;
+    }
+    .evidence, .comment {
+      margin-top: 15px;
+    }
+    .evidence label, .comment label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      margin-bottom: 5px;
+    }
+    input[type="radio"] {
+      margin-right: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+     /* ✅ 여기 추가 */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: center;
+}
+
+td:nth-child(1) {
+  width: 100px;
+  text-align: center;
+}
+
+td:nth-child(2) {
+  text-align: center;
+}
+
+#learningOutcomeEvalTableContainer table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#learningOutcomeEvalTableContainer th,
+#learningOutcomeEvalTableContainer td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  vertical-align: top;
+}
+
+/* ✅ 첫 행(header row) 모든 셀 가운데 정렬 */
+#learningOutcomeEvalTableContainer tr:first-child th {
+  text-align: center;
+}
+
+/* ✅ 두 번째 행부터 모든 셀 왼쪽 정렬 */
+#learningOutcomeEvalTableContainer tr:not(:first-child) th,
+#learningOutcomeEvalTableContainer tr:not(:first-child) td {
+  text-align: left;
+}
+
+/* 학습목표 column width */
+#learningOutcomeEvalTableContainer th:first-child,
+#learningOutcomeEvalTableContainer td:first-child {
+  width: 28%;
+}
+
+/* 평가방법 columns width */
+#learningOutcomeEvalTableContainer th:not(:first-child),
+#learningOutcomeEvalTableContainer td:not(:first-child) {
+  width: 18%;
+}
+
+/* 라벨을 다른 줄에 표시 */
+#learningOutcomeEvalTableContainer td label {
+  display: block;
+}
+
+
+
+  </style>
+<script>
+  // 입력값 저장
+function saveFormData() {
+  const formElements = document.querySelectorAll('input, textarea, select');
+  const checkboxGroups = {};
+
+  formElements.forEach(el => {
+    if (el.type === 'radio') {
+      if (el.checked) {
+        localStorage.setItem(el.name, el.value);
+      }
+    } else if (el.type === 'checkbox') {
+      if (!checkboxGroups[el.name]) checkboxGroups[el.name] = [];
+      if (el.checked) checkboxGroups[el.name].push(el.value);
+    } else {
+      localStorage.setItem(el.name, el.value);
+    }
+  });
+
+  for (const key in checkboxGroups) {
+    localStorage.setItem(key, JSON.stringify(checkboxGroups[key]));
+  }
+}
+
+function loadFormData() {
+  const formElements = document.querySelectorAll('input, textarea, select');
+
+  formElements.forEach(el => {
+    const saved = localStorage.getItem(el.name);
+    if (saved !== null) {
+      if (el.type === 'radio') {
+        if (el.value === saved) el.checked = true;
+      } else if (el.type === 'checkbox') {
+        try {
+          const savedArray = JSON.parse(saved);
+          if (Array.isArray(savedArray) && savedArray.includes(el.value)) {
+            el.checked = true;
+          }
+        } catch {
+          if (el.value === saved) {
+            el.checked = true;
+          }
+        }
+      } else {
+        el.value = saved;
+      }
+    }
+  });
+}
+
+function setAutoSaveListeners() {
+  const formElements = document.querySelectorAll('input, textarea, select');
+  formElements.forEach(el => {
+    const eventType = (el.type === 'checkbox' || el.type === 'radio' || el.tagName === 'SELECT') ? 'change' : 'input';
+    el.addEventListener(eventType, saveFormData);
+  });
+}
+
+// 실행
+window.addEventListener('DOMContentLoaded', () => {
+  loadFormData();
+  setAutoSaveListeners();
+});
+
+
+//과목별 평가요소
+
+const data = {
+"DMH 2: 의사와 행동규범":{
+  "phases": [
+    { "code": "E2F6", "desc": "환자안전을 위한 기본 원칙을 설명할 수 있고, (모의)환자와 대면할 때 이를 적용할 수 있다." },
+    { "code": "S2F3", "desc": "의학연구에서 연구자가 고려해야 하는 윤리적 문제를 나열하고 그 해결을 위해 제안된 절차를 설명할 수 있다." },
+    { "code": "P1F2", "desc": "임상의학에서 발생하는 윤리적·법적 문제를 이해하고, 의사 윤리원칙에 따라 진료를 수행할 수 있다." },
+    { "code": "P1C4", "desc": "의료와 관련된 법적 문제를 이해하고, 이를 해결하기 위해 다양한 입장의 이해당사자들과 협력할 수 있다." }
+  ],
+
+  "links": [
+    {"phase": ["P1F2"], "outcomes": ["1. 임상의학에서 발생하는 윤리적·법적 문제를 이해하고, 의사 윤리원칙에 따라 진료를 수행할 수 있다."]},
+    {"phase": ["S2F3"], "outcomes": ["2. 의학연구에서 연구자가 고려해야 하는 윤리적 문제를 나열하고 그 해결을 위해 제안된 절차를 설명할 수 있다."]},
+    {"phase": ["P1C4"], "outcomes": ["3. 의료와 관련된 법적 문제를 이해하고, 이를 해결하기 위해 다양한 입장의 이해당사자들과 협력할 수 있다."]},
+    {"phase": ["E2F6"], "outcomes": ["4. 환자안전을 위한 기본 원칙을 설명할 수 있으며, 환자와 대면할 때 이를 적용할 수 있다."]}
+  ]
+},
+
+ "Doctoring Practicum 2": {
+  "phases": [
+    { "code": "E2F1","desc":  "병력청취 및 신체진찰의 원칙과 방법을 설명할 수 있고, (모의)환자의 임상표현을 중심으로 기본적인 병력 청취와 신체 진찰을 시행할 수 있다." },
+    { "code": "C1F2", "desc": "(모의)환자와의 대화에서 환자중심적 태도로 의사소통 할 수 있다." }
+  ],
+
+  "links": [
+    {"phase": ["E2F1"], "outcomes": ["1. 신체 진찰, 신경학적 검사를 시행할 수 있다."]},
+    {"phase": ["C1F2"], "outcomes": ["2. 환자중심적 태도를 보여줄 수 있다."]}
+  ]
+},
+
+
+"임상인문사회의학 1": {
+  "phases": [
+    { "code": "E1C2", "desc": "환자의 심리적, 사회경제적, 환경적 요인을 파악하고 환자, 가족, 다른 돌봄 제공자들과 협조하여 진료와 치료계획 수립에 활용할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." },
+    { "code": "P1C4", "desc": "의료전문가 단체의 윤리지침, 법률, 윤리적 이론을 실제 의사결정 과정에 적용하여 윤리적으로 타당한 판단을 내릴 수 있다." },
+    { "code": "P2C3", "desc": "학습과정에서 경험한 리더십과 팔로워십 활동을 통해 자신을 성찰하여 미흡한 점을 개선할 수 있다. " }
+  ],
+
+  "links": [
+    {"phase": ["C2C3"], "outcomes": ["1. 학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."]},
+    {"phase": ["E1C2"], "outcomes": ["2. 환자의 심리적, 사회경제적, 환경적 요인을 파악하고 환자, 가족, 다른 돌봄 제공자들과 협조하여 진료와 치료의 맥락에 활용할 수 있다."]},
+    {"phase": ["E2C4"], "outcomes": ["3. 허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."]},
+    {"phase": ["P1C4"], "outcomes": ["4. 의료전문가 단체의 윤리지침, 법률, 윤리적 이론을 실제 의사결정 과정에 적용하여 윤리적으로 타당한 판단을 내릴 수 있다."]},
+    {"phase": ["P2C3"], "outcomes": [ "5. 학습과에서 경험한 리더십과 팀워크 활동을 통해 자신을 성찰하며 미흡한 점을 개선할 수 있다."]}
+  ]
+},
+
+"임상인문사회의학 2": {
+  "phases": [
+    { "code": "E1C2", "desc": "환자의 심리적, 사회경제적, 환경적 요인을 파악하고 환자, 가족, 다른 돌봄 제공자들과 협조하여 진료와 치료계획 수립에 활용할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." },
+    { "code": "P1C4", "desc": "의료전문가 단체의 윤리지침, 법률, 윤리적 이론을 실제 의사결정 과정에 적용하여 윤리적으로 타당한 판단을 내릴 수 있다." },
+    { "code": "P2C3", "desc": "학습과정에서 경험한 리더십과 팔로워십 활동을 통해 자신을 성찰하여 미흡한 점을 개선할 수 있다. " }
+  ],
+
+  "links": [
+    { "phase": ["C2C3"], "outcomes": ["학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다."] },
+    { "phase": ["E1C2"], "outcomes": ["환자의 심리적, 사회경제적, 환경적 요인을 파악하고 환자, 가족, 다른 돌봄 제공자들과 협조하여 진료와 치료의 맥락에 활용할 수 있다."] },
+    { "phase": ["E2C4"], "outcomes": ["허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."] },
+    { "phase": ["P1C4"], "outcomes": ["의료전문가 단체의 윤리지침, 법률, 윤리적 이론을 실제 의사결정 과정에 적용하여 윤리적으로 타당한 판단을 내릴 수 있다."] },
+    { "phase": ["P2C3"], "outcomes": ["학습과정에서 경험한 리더십과 팀워크 활동을 통해 자신을 성찰하며 미흡한 점을 개선할 수 있다."] }
+  ]
+},
+
+"임상인문사회의학 3": {
+  "phases": [
+    { "code": "E1C2", "desc": "환자의 심리적, 사회경제적, 환경적 요인을 파악하고 환자, 가족, 다른 돌봄 제공자들과 협조하여 진료와 치료계획 수립에 활용할 수 있다." },
+    { "code": "E2C4", "desc": "허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다." },
+    { "code": "C2C3", "desc": "학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 주고받을 수 있다." },
+    { "code": "P1C4", "desc": "의료전문가 단체의 윤리지침, 법률, 윤리적 이론을 실제 의사결정 과정에 적용하여 윤리적으로 타당한 판단을 내릴 수 있다." },
+    { "code": "P2C3", "desc": "학습과정에서 경험한 리더십과 팔로워십 활동을 통해 자신을 성찰하여 미흡한 점을 개선할 수 있다. " }
+  ],
+
+  "links": [
+    { "phase": ["C2C3"], "outcomes": ["학습 및 환자 진료, 전문적 영역에서 동료와 건설적인 피드백을 수·발신할 수 있다."] },
+    { "phase": ["E1C2"], "outcomes": ["환자의 심리적, 사회경제적, 환경적 요인을 파악하고 환자, 가족, 다른 돌봄 제공자들과 협조하여 진료와 치료계획 수립에 활용할 수 있다."] },
+    { "phase": ["E2C4"], "outcomes": ["허용된 범위에서 진단술기 및 치료술기를 안전하고 정확하게 시행할 수 있다."] },
+    { "phase": ["P1C4"], "outcomes": ["의료전문가 단체의 윤리지침, 법률, 윤리적 이론을 실제 의사결정 과정에 적용하여 윤리적으로 타당한 판단을 내릴 수 있다."] },
+    { "phase": ["P2C3"], "outcomes": ["학습과정에서 경험한 리더십과 팀워크 활동을 통해 자신을 성찰하며 미흡한 점을 개선할 수 있다."] }
+  ]
+},
+  // ... 다른 과목도 같은 형식으로 추가
+};
+
+
+
+
+
+
+
+// 과목별 과정성과 표시
+function showSubjectOutcome() {
+
+  const subject = document.getElementById("subjectSelect").value;
+
+  // ✅ 과목명 표시
+  const subjectNameDisplays = document.querySelectorAll(".subjectNameDisplay");
+  subjectNameDisplays.forEach(el => {
+    el.textContent = subject || "[과목명]";
+  });
+
+  // ✅ 시기성과 리스트 생성 (phaseTableContainer 관련 삭제)
+  const phaseListBox = document.getElementById("phaseListBox");
+
+  if (phaseListBox && subject && data[subject] && data[subject].phases) {
+    let phaseListHtml = "<ul>";
+    data[subject].phases.forEach(phase => {
+      phaseListHtml += `<li><strong>${phase.code}</strong>: ${phase.desc}</li>`;
+    });
+    phaseListHtml += "</ul>";
+    phaseListBox.innerHTML = phaseListHtml;
+  } else if (phaseListBox) {
+    phaseListBox.innerHTML = "과목을 선택하시면 시기성과가 표시됩니다.";
+  }
+
+  // ✅ 표 생성 함수 호출
+  if(document.getElementById("phaseOutcomeTableContainer")) {
+    generatePhaseOutcomeTable();
+  }
+}
+
+
+
+
+
+
+
+
+
+function generatePhaseOutcomeTable() {
+  const subject = document.getElementById("subjectSelect").value;
+  const container = document.getElementById("phaseOutcomeTableContainer");
+
+  if (!subject || !data[subject]) {
+    container.innerHTML = "과목을 선택하시면 표가 생성됩니다.";
+    return;
+  }
+
+  const subjectData = data[subject];
+
+  let tableHtml = `
+    <style>
+      .phase-outcome-table td {
+        font-size: 14px; /* 2번째 행부터 작은 글자크기 */
+      }
+    </style>
+    <table class="phase-outcome-table" border="1" style="border-collapse: collapse; width: 100%;">
+      <tr>
+        <th style="width: 10%;">시기성과</th>
+        <th style="width: 65%;">교과목 학습목표 (과정성과)</th>
+        <th style="width: 25%;">연계 여부</th>
+      </tr>
+  `;
+
+subjectData.links.forEach((link, index) => {
+  const inputName = `3_3_1_${link.phase}_${index + 1}`;
+
+  tableHtml += `
+    <tr>
+      <td>${link.phase}</td>
+      <td style="text-align: left;">
+        <ul style="margin:0; padding-left:1em; list-style-type: none;">
+          ${link.outcomes.map(outcome => `<li>${outcome}</li>`).join("")}
+        </ul>
+      </td>
+      <td>
+        <label><input type="radio" name="${inputName}" value="1" required> 적절하게 연계됨</label><br>
+        <label><input type="radio" name="${inputName}" value="0"> 적절하게 연계되지 않음</label>
+      </td>
+    </tr>
+  `;
+});
+
+
+
+
+  tableHtml += '</table>';
+  container.innerHTML = tableHtml;
+  
+  
+  loadFormData();  // ✅ 저장된 값을 다시 로드해줌
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // 맨 위 버튼 기능
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
+ //응답 초기화 기능
+
+
+
+function toggleQuestion3() {
+  const selected = document.querySelector('input[name="3_3_2"]:checked');
+  const question3 = document.getElementById("question_3_3_3");
+
+  if (selected && selected.value === "1") {
+    question3.style.display = "block";
+  } else {
+    question3.style.display = "none";
+
+    // 선택 해제 (비활성화 시 기존 선택값 삭제)
+    const inputs = question3.querySelectorAll('input[type="radio"]');
+    inputs.forEach(input => input.checked = false);
+  }
+}
+
+
+
+
+  // 저장 이벤트 연결 + 과목 표시 초기화
+window.addEventListener('DOMContentLoaded', () => {
+  loadFormData();
+  showSubjectOutcome();
+
+  const formElements = document.querySelectorAll('input, textarea, select');
+  formElements.forEach(el => {
+    el.addEventListener('change', saveFormData);
+    el.addEventListener('input', saveFormData);
+  });
+
+  document.getElementById("subjectSelect").addEventListener("change", showSubjectOutcome);
+});
+
+
+</script>
+
+
+</head>
+<body>
+  <h1>2025년 연세의대 교육프로그램 평가</h1>
+  <p style="font-size: 18px; font-weight: 500; color: #2c3e50;">평가 대상: DMH 교육과정(2025학년도 2학기) </p>
+  <div class="deadline">
+    제출기한: <b> 2026.3.~ </b>
+  </div>
+
+  <div class="note">* 근거자료명은 입력한 값의 원자료가 포함된 자료이름(파일이름)을 작성하여 주십시오. (근거자료 예시를 참조)</div>
+  <div class="note">* 근거자료는 별도 제출하지 않으셔도 되며, 부서에서 보관해 주십시오. (추후 필요시 근거자료의 제출을 요청할 수 있음)</div>
+  <div class="note">* 입력한 결과 값 외에 추가적으로 작성하실 내용이나, 평가지표 개선과 관련한 의견이 있을 경우 <b>비고/의견</b>란에 기입해 주십시오.</div>
+
+ <form method="POST" action="https://script.google.com/macros/s/AKfycbxgLcFKEtzH68MONZPf1WCAQghPYAo7rip-j5cweS1UhZHIsWSO8DLy9rFprrx5wrKy-w/exec">
+
+<br>
+<label for="subject"><b>과목을 선택하세요:</b></label>
+<select name="subject" id="subjectSelect" required style="width: 100%; max-width: 400px; padding: 6px;font-size: 16px;">
+
+  <option value="">-- 과목 선택 --</option>
+  <option value="DMH 2: 의사와 행동규범">DMH 2: 의사와 행동규범</option>
+  <option value="Doctoring Practicum 2">Doctoring Practicum 2</option>
+  <option value="임상인문사회의학 1">임상인문사회의학 1</option>
+  <option value="임상인문사회의학 2">임상인문사회의학 2</option>
+  <option value="임상인문사회의학 3">임상인문사회의학 3</option>
+</select>
+
+  <!-- 작성자 이름 -->
+ <div style="margin-top:12px; max-width:400px;">
+  <label for="respondentName"><b>작성자:</b></label>
+  <input type="text" id="respondentName" name="respondent_name"
+         placeholder="홍길동" required
+         style="width:70%; padding:6px; font-size:16px;">
+</div>
+
+
+	 <!-- 1_5 -->      
+ <div class="question">
+  <h2>1. [1_5] 행정 지원의 충분성</h2>
+
+  <!-- 하위 문항 1 -->
+  <div style="margin-left: 1.5em; margin-top: 1em;">
+    <strong>(1)</strong> 교과목에 대한 <u>인력 지원</u>이 충분하다고 생각하십니까?
+    <div style="text-align: center; font-size: 14px; color: #777; margin-bottom: 5px;">
+      1 = 매우 부족함 &nbsp;&nbsp;|&nbsp;&nbsp; 10 = 매우 충분함
+    </div>
+    <div class="options" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      <label><input type="radio" name="1_5_1" value="1" required>1</label>
+      <label><input type="radio" name="1_5_1" value="2">2</label>
+      <label><input type="radio" name="1_5_1" value="3">3</label>
+      <label><input type="radio" name="1_5_1" value="4">4</label>
+      <label><input type="radio" name="1_5_1" value="5">5</label>
+      <label><input type="radio" name="1_5_1" value="6">6</label>
+      <label><input type="radio" name="1_5_1" value="7">7</label>
+      <label><input type="radio" name="1_5_1" value="8">8</label>
+      <label><input type="radio" name="1_5_1" value="9">9</label>
+      <label><input type="radio" name="1_5_1" value="10">10</label>
+    </div>
+  </div>
+
+  <!-- 하위 문항 2 -->
+  <div style="margin-left: 1.5em; margin-top: 2em;">
+    <strong>(2)</strong> 교과목의 <u>과목운영비 및 예산</u>이 충분하다고 생각하십니까?
+    <div style="text-align: center; font-size: 14px; color: #777; margin-bottom: 5px;">
+      1 = 매우 부족함 &nbsp;&nbsp;|&nbsp;&nbsp; 10 = 매우 충분함
+    </div>
+    <div class="options" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      <label><input type="radio" name="1_5_2" value="1" required>1</label>
+      <label><input type="radio" name="1_5_2" value="2">2</label>
+      <label><input type="radio" name="1_5_2" value="3">3</label>
+      <label><input type="radio" name="1_5_2" value="4">4</label>
+      <label><input type="radio" name="1_5_2" value="5">5</label>
+      <label><input type="radio" name="1_5_2" value="6">6</label>
+      <label><input type="radio" name="1_5_2" value="7">7</label>
+      <label><input type="radio" name="1_5_2" value="8">8</label>
+      <label><input type="radio" name="1_5_2" value="9">9</label>
+      <label><input type="radio" name="1_5_2" value="10">10</label>
+    </div>
+  </div>
+
+  <!-- 하위 문항 3 -->
+  <div style="margin-left: 1.5em; margin-top: 2em;">
+    <strong>(3)</strong> 교과목 운영에 필요한 <u>시설/설비</u>가 충분하다고 생각하십니까?
+    <div style="text-align: center; font-size: 14px; color: #777; margin-bottom: 5px;">
+      1 = 매우 부족함 &nbsp;&nbsp;|&nbsp;&nbsp; 10 = 매우 충분함
+    </div>
+    <div class="options" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      <label><input type="radio" name="1_5_3" value="1" required>1</label>
+      <label><input type="radio" name="1_5_3" value="2">2</label>
+      <label><input type="radio" name="1_5_3" value="3">3</label>
+      <label><input type="radio" name="1_5_3" value="4">4</label>
+      <label><input type="radio" name="1_5_3" value="5">5</label>
+      <label><input type="radio" name="1_5_3" value="6">6</label>
+      <label><input type="radio" name="1_5_3" value="7">7</label>
+      <label><input type="radio" name="1_5_3" value="8">8</label>
+      <label><input type="radio" name="1_5_3" value="9">9</label>
+      <label><input type="radio" name="1_5_3" value="10">10</label>
+    </div>
+  </div>
+</div>
+
+    
+     <!-- 3_2-->    
+    <div class="question">
+      <h2>2. [3_2] 의료환경의 변화를 반영하여 교과목 내용을 개선하였습니까?</h2>
+            <p style="font-size: 13px; color: #555; margin-top: 4px;">
+* 의료환경의 변화란, 의료에 직·간접적으로 영향을 주는 자연 또는 사회의 조건과 형편의 변화를 의미하며, 의료의 수요·공급·사회적 요구의 변화 등을 포함힘.
+  </p>
+
+      <div class="options">
+        <label><input type="radio" name="3_2" value="1" required > 개선함</label>
+<label><input type="radio" name="3_2" value="0"> 개선하지 않음</label>
+
+      </div>
+      <div class="evidence">
+        <label for="evidence_3_2">근거자료명:</label>
+        <input type="text" id="evidence_3_2" name="evidence_3_2" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 보건 의료 정책 변화에 따른 교과목 개편 회의록, 학습목표 및 강의안 수정 내역 등</div>
+      </div>
+      <div class="comment">
+        <label for="comment_3_2">비고/의견:</label>
+        <textarea id="comment_3_2" name="comment_3_2" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+      </div>
+    </div>
+    
+<!-- 3_3--> 
+<div class="question">
+  <h2> 3. [3_3] 졸업성과-시기성과-과정성과-수업성과가 연계된 성과체계 수립 비율</h2>
+    <p style="font-size: 15px; color: #555; margin-top: 6px;">
+    ※ 2025학년도 2학기 개설된 
+    <span class="subjectNameDisplay" style="font-weight: bold; color: #1a73e8;">[과목명]</span>
+    교과목의 시기성과는 다음과 같습니다.
+  </p>
+
+  <!-- ✅ 네모칸 (박스) -->
+  <div id="phaseListBox" style="
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+    background-color: #f9f9f9; /* 연회색 배경 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    padding: 10px; /* 안쪽 여백 */
+  ">
+    과목을 선택하시면 시기성과가 표시됩니다.
+  </div>
+
+  <!-- 하위 문항 1 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(1)</strong> 해당 교과목의 시기성과가 교과목 학습목표(과정성과)와 <b>위계적으로 적절하게 연계</b>되어 있다고 생각하십니까?
+
+    <div id="phaseOutcomeTableContainer">
+    과목을 선택하시면 표가 생성됩니다.
+  </div>
+  
+  </div>
+  
+<!-- 하위 문항 2 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+  <strong>(2)</strong> 수업별 학습목표를 작성하셨습니까?
+  <div class="options" style="margin-top: 10px;">
+    <label><input type="radio" name="3_3_2" value="1" onchange="toggleQuestion3()" required > 작성하였음 </label>
+    <label><input type="radio" name="3_3_2" value="0" onchange="toggleQuestion3()"> 작성하지 않음</label>
+  </div>
+</div>
+
+  
+<!-- 하위 문항 3 -->
+<div id="question_3_3_3" style="margin-left: 1.5em; margin-top: 1.5em; display: none;">
+  <strong>(3)</strong> 졸업성과, 시기성과, 교과목 학습목표(과정성과), 수업별 학습목표(수업성과) 간의 위계적 연결을 고려하여 수업별 학습목표(수업성과)를 작성하였습니까?
+  <div class="options" style="margin-top: 10px;">
+    <label><input type="radio" name="3_3_3" value="1" required > 위계적 연결을 고려하여 작성함</label>
+    <label><input type="radio" name="3_3_3" value="0"> 위계적 연결을 고려하지 않고 작성함</label>
+  </div>
+</div>
+
+
+  
+</div>
+
+
+     <!-- 4_7 --> 
+<div class="question">
+  <h2> 4. [4_7] 시험 문제 공개 이외에, 학생들에게 다양한 형태의 피드백을 제공한 적이 있습니까?</h2>
+    <p style="font-size: 13px; color: #555; margin-top: 4px;">
+* 다양한 형태의 피드백이란, 책임교수 면담, TBL 진행 후 조별/강의교수 피드백, CT&CR 보고서에 대한 서면 피드백, 성찰에세이에 대한 서면 피드백, 실습과목별 종합피드백, 평가루브릭에 기반한 OSCE & CPX 평가 관련 피드백, 형성평가 및 총괄평가 
+  결과를 근거로 학생에게 제공하는 종합적 피드백 등을 포함할 수 있음.
+  </p>
+    <div class="options" style="margin-top: 6px;">
+      <label><input type="radio" name="4_7" value="1" required> 제공함 </label>
+      <label><input type="radio" name="4_7" value="0"> 제공하지 않음 </label>
+    </div>
+
+  <!-- 공통 근거자료 및 비고 -->
+  <div class="evidence" style="margin-top: 25px;">
+    <label for="evidence_4_7">근거자료명:</label>
+    <input type="text" id="evidence_4_7" name="evidence_4_7" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 서술형 피드백 또는 구두 피드백 시행 기록, 시험 후 개별 피드백 제공 내역, 교수자 회의록 또는 학생 상담 기록, 수업 중 실시한 형성평가 내역 등 </div>
+      </div>
+  <div class="comment">
+    <label for="comment_4_7">비고/의견:</label>
+    <textarea id="comment_4_7" name="comment_4_7" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+  </div>
+</div>
+  
+     <!-- 4_8-->    
+    <div class="question">
+      <h2>5. [4_8] 과목별/시기별 평가결과에 기반한 피드백 제공 비율 </h2>
+     <!-- 하위 문항 1 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+  <strong>(1)</strong> 해당 교과목에서 형성평가를 시행하였습니까?
+  <p style="font-size: 13px; color: #555; margin-top: 4px;"> 
+  * 형성평가: 학습과 교수가 진행되고 있는 과정 중에 학생에게 피드백을 제공하고, 이를 통해 교수·학습 방법과 교육과정을 개선하기 위해 실시하는 평가 </p>
+  <div class="options" style="margin-top: 10px;">
+    <label><input type="radio" name="4_8_1"  value="1" required> 시행함</label>
+    <label><input type="radio" name="4_8_1"  value="0"> 시행하지 않음</label>
+  </div>
+</div> 
+        <!-- 하위 문항 2 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(2)</strong> 교과목에서 형성평가 또는 총괄평가*에 기반한 종합피드백**을 학생에게 제공하였습니까?
+      
+  <p style="font-size: 13px; color: #555; margin-top: 4px;"> *총괄평가: 학생의 학업 성취 달성 정도를 최종적으로 확인하기 위한 총체적 검사<br> 
+  	**종합피드백: 학생이 학습한 내용과 평가 결과를 포함하여, 학업 성취 수준의 강·약점, 발전할 사항 등을 총체적으로 제시하는 피드백 </p>
+
+      <div class="options">
+        <label><input type="radio" name="4_8_2" value="1" required> 제공함</label>
+<label><input type="radio" name="4_8_2" value="0"> 제공하지 않음</label>
+      </div>
+    </div>
+    
+            <!-- 하위 문항 3 -->
+<div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(3)</strong> Phase 1 시기성과의 달성 여부를 확인하기 위한 종합평가 결과를  바탕으로 학생에게 피드백을 제공하였습니까?
+
+      <div class="options">
+        <label><input type="radio" name="4_8_3" value="1" required> 제공함</label>
+<label><input type="radio" name="4_8_3" value="0"> 제공하지 않음</label>
+      </div>
+    </div>
+      <div class="evidence">
+        <label for="evidence_4_8">근거자료명 (전체 항목 공통):</label>
+        <input type="text" id="evidence_4_8" name="evidence_4_8" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 종합피드백 계획 및 방법이 명시된 자료 </div>
+      </div>
+      <div class="comment">
+        <label for="comment_4_8">비고/의견 (전체 항목 공통):</label>
+        <textarea id="comment_4_8" name="comment_4_8" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+      </div>
+    </div>
+
+              <!-- 5_6-->    
+    <div class="question">
+      <h2>6. [5_6] 해당 교과목은 기초-임상-인문사회의학  수직통합 과목 입니까?</h2>
+  <p style="font-size: 13px; color: #555; margin-top: 4px;"> * 수직통합 과목이란 기초과학, 임상의학, 의료인문학 간의 관련성을 제공하여 통합된 전체 과제로 학습자를 가르치는 과목을 의미함 </p>
+
+      <div class="options">
+        <label><input type="radio" name="5_6" value="1" required> 수직통합 과목임</label>
+<label><input type="radio" name="5_6" value="0"> 수직통합 과목이 아님</label>
+
+      </div>
+      <div class="evidence">
+        <label for="evidence_5_6">근거자료명:</label>
+        <input type="text" id="evidence_5_6" name="evidence_5_6" placeholder="예: 관련 문서명 또는 파일이름">
+        <div style="font-size: 13px; color: #555;">근거자료 예시: 통합교육 운영계획서, 강의계획서 내 과목 간 통합 구성표 </div>
+      </div>
+      <div class="comment">
+        <label for="comment_5_6">비고/의견:</label>
+        <textarea id="comment_5_6" name="comment_5_6" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+      </div>
+    </div>
+    
+       <!-- 5_7(1_6), 기본의학교육과정이랑 같이 분석 -->  
+<div class="question">
+  <h2>7. [5_7] 교과목 운영에서, 강의 외 교수학습법을 적용한 총 시수를 입력해 주십시오</h2>
+  <p style="font-size: 13px; color: #555; margin-top: 4px;">
+      * 강의 외 교수학습법에는 Flipped learning, TBL, CBL, PBL, 소그룹 활동, 시뮬레이션 활용 교육 등을 적용할 수 있음.
+  </p>
+  <p style="font-size: 13px; color: #555; margin-bottom: 8px;">
+    아래 칸에 숫자를 입력해 주세요.
+  </p>
+
+  <div style="font-size: 15px; margin-bottom: 12px;">
+    전체 시수 
+    <input type="number" name="1_6_total" min="0" style="width: 60px; padding: 4px; margin: 0 5px;"> 중 
+    강의 외 교수학습법 적용 시수 
+    <input type="number" name="1_6_applied" min="0" required style="width: 60px; padding: 4px; margin-left: 5px;">
+  </div>
+
+  <div class="evidence" style="margin-top: 15px;">
+    <label for="evidence_1_6">근거자료명:</label>
+    <input type="text" id="evidence_1_6" name="evidence_1_6" placeholder="예: 관련 문서명 또는 파일이름">
+    <div style="font-size: 13px; color: #555;">근거자료 예시: 시수별 시행한 수업형식이 포함된 강의계획서 등의 자료</div>
+  </div>
+
+  <div class="comment">
+    <label for="comment_1_6">비고/의견:</label>
+    <textarea id="comment_1_6" name="comment_1_6" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+  </div>
+</div>
+   
+ <!-- ✅ 시기성과 코드 + 여부 표 -->
+  <div id="phaseTableContainer" style="margin-top: 10px;">
+
+  </div>
+
+     
+
+
+
+ <!-- 5_8 -->
+<div class="question">
+  <h2>8. [5_8] 의도한 교육성과-교육내용의 조직-교수학습법-평가방법의 유기적 연결</h2>
+
+  <div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(1)</strong> 본 교과목의 강의계획서에 제시된 교육내용, 교수학습법, 평가방법이 교과목 학습 목표 (의도한 교육성과, 과정성과) 달성에 유기적으로 연결되어 있다고 생각하십니까?
+    <div class="options" style="margin-top: 6px;">
+      <label><input type="radio" name="5_8_1" value="1" required> 1. 전혀 아니다</label>
+      <label><input type="radio" name="5_8_1" value="2"> 2. 아니다</label>
+      <label><input type="radio" name="5_8_1" value="3"> 3. 보통</label>
+      <label><input type="radio" name="5_8_1" value="4"> 4. 그렇다</label>
+      <label><input type="radio" name="5_8_1" value="5"> 5. 매우 그렇다</label>
+    </div>
+  </div>
+
+<!-- (2)번 문항: 조건부 노출 -->
+<div id="q5_8_2" style="display:none;">
+  <div style="margin-left: 1.5em; margin-top: 1.5em;">
+    <strong>(2)</strong> 위 문항에서 "보통 이하(1~3)"로 응답하신 경우, 아래 보기 중 어떤 부분의 개선이 필요하다고 생각하십니까?<br> (복수 선택 가능)<br><br>
+
+    <!-- ✅ name을 "5_8_2"로 고정 -->
+    <label>
+      <input type="checkbox" name="5_8_2" value="학습목표"> 
+    <strong>  학습목표</strong>
+      <span class="description">: 강의계획서에 제시된 학습목표의 명확성 부족</span>
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="5_8_2" value="교육내용 조직"> 
+     <strong> 교육내용 조직 </strong>
+      <span class="description">: 제시된 교육내용이 학습 목표와 일치하지 않음</span>
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="5_8_2" value="교수학습법"> 
+    <strong>  교수학습법 </strong>
+      <span class="description">: 사용된 교수학습법이 학습 목표 달성에 적절하지 않음</span>
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="5_8_2" value="평가방법"> 
+    <strong>  평가방법 </strong>
+      <span class="description">: 평가 방식이 학습목표와 잘 연계되지 않거나, 학습 성과를 제대로 측정하지 못함</span>
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="5_8_2" value="기타"> 
+    <strong>  기타 </strong>  (직접 작성해 주세요):
+      <input type="text" name="5_8_2_etc" style="width: 300px;">
+    </label>
+  </div>
+</div>
+
+
+
+<!-- (항상 노출) 근거자료 및 의견 -->
+  <div class="evidence" style="margin-left: 1.5em; margin-top: 1.5em;">
+    <label for="evidence_5_8">근거자료명:</label>
+    <input type="text" id="evidence_5_8" name="evidence_5_8" placeholder="예: 관련 문서명 또는 파일이름">
+    <div style="font-size: 13px; color: #555;">근거자료 예시: 통합교육 운영계획서, 강의계획서 내 과목 간 통합 구성표</div>
+  </div>
+  <div class="comment" style="margin-left: 1.5em; margin-top: 1em;">
+    <label for="comment_5_8">비고/의견:</label>
+    <textarea id="comment_5_8" name="comment_5_8" rows="3" placeholder="자유롭게 입력해 주세요."></textarea>
+  </div>
+</div>
+ 
+ 
+ 
+
+
+ 
+    
+    <!-- 맨 위로 이동 버튼 -->
+<button onclick="scrollToTop()" style="
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 10px 15px;
+  font-size: 14px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+">
+
+  ▲ 맨 위로
+</button>
+
+    <button type="submit">제출</button>
+  </form>
+  
+  
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('input[name="5_8_1"]');
+    const followUp = document.getElementById('q5_8_2');
+
+    radios.forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        const selected = parseInt(this.value);
+        if (selected >= 1 && selected <= 3) {
+          followUp.style.display = 'block';
+        } else {
+          followUp.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
+
+
+
+
+
